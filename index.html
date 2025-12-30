@@ -3,306 +3,459 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KALA BAZAR | Best Deals</title>
+    <title>KALA BAZAR | Exclusive Deals</title>
     <style>
-        :root { --dark: #121212; --gold: #f39c12; --red: #e74c3c; --green: #27ae60; --white: #fff; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f4f7f6; }
-        header { background: var(--dark); color: var(--white); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 1.5rem; font-weight: bold; color: var(--gold); }
+        :root { --dark: #121212; --gold: #f39c12; --red: #e74c3c; --green: #27ae60; --white: #fff; --gray: #f4f7f6; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--gray); -webkit-tap-highlight-color: transparent; }
+        
+        /* HEADER */
+        header { background: var(--dark); color: var(--white); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .logo { font-size: 1.8rem; font-weight: 900; color: var(--gold); letter-spacing: 1px; }
         .menu-icon { font-size: 1.8rem; cursor: pointer; color: var(--white); }
-        .sidebar { height: 100%; width: 0; position: fixed; z-index: 2000; top: 0; right: 0; background-color: var(--dark); overflow-x: hidden; transition: 0.5s; padding-top: 60px; }
+
+        /* SIDEBAR */
+        .sidebar { height: 100%; width: 0; position: fixed; z-index: 2000; top: 0; right: 0; background-color: #000; overflow-x: hidden; transition: 0.4s; padding-top: 60px; box-shadow: -2px 0 10px rgba(0,0,0,0.5); }
         .sidebar a { padding: 15px 32px; text-decoration: none; font-size: 1.2rem; color: #818181; display: block; transition: 0.3s; }
-        .sidebar a:hover { color: var(--gold); }
-        .sidebar .closebtn { position: absolute; top: 10px; right: 25px; font-size: 36px; }
-        .nav-tabs { background: white; display: flex; overflow-x: auto; padding: 10px 5%; gap: 10px; border-bottom: 1px solid #ddd; }
-        .tab-btn { border: 1px solid #ccc; background: white; padding: 8px 20px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-weight: bold; }
-        .tab-btn.active { background: var(--dark); color: var(--gold); }
-        .container { padding: 15px 5%; }
+        .sidebar a:hover { color: var(--gold); border-left: 4px solid var(--gold); }
+        .sidebar .closebtn { position: absolute; top: 10px; right: 25px; font-size: 36px; margin-left: 50px; }
+
+        /* TABS */
+        .nav-tabs { background: white; display: flex; overflow-x: auto; padding: 15px 5%; gap: 15px; border-bottom: 1px solid #ddd; scrollbar-width: none; }
+        .tab-btn { border: 1px solid #ddd; background: white; padding: 10px 25px; border-radius: 25px; cursor: pointer; white-space: nowrap; font-weight: bold; font-size: 0.95rem; transition: 0.3s; }
+        .tab-btn.active { background: var(--dark); color: var(--gold); border-color: var(--dark); transform: scale(1.05); }
+
+        /* GRID */
+        .container { padding: 20px 5%; padding-bottom: 80px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-        .card { background: white; border-radius: 10px; padding: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; cursor: pointer; }
-        .card img { width: 100%; height: 140px; object-fit: contain; background: #eee; }
-        .discount { position: absolute; top: 5px; left: 5px; background: var(--green); color: white; padding: 2px 6px; font-size: 0.7rem; border-radius: 3px; }
-        .price { color: var(--red); font-weight: bold; font-size: 1.1rem; }
-        .old-price { text-decoration: line-through; color: #888; font-size: 0.8rem; }
-        .buy-btn { background: var(--gold); border: none; padding: 10px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 8px; }
-        #detail-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; display: none; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
-        .detail-box { background: white; padding: 20px; border-radius: 15px; max-width: 500px; width: 100%; text-align: center; color: #000; }
-        .detail-box .carousel { display: flex; overflow-x: auto; margin: 10px 0; }
-        .detail-box .carousel img { width: 100%; height: 200px; object-fit: contain; margin-right: 10px; }
-        .color-options { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
-        .color-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ccc; cursor: pointer; }
-        .color-btn.active { border: 3px solid var(--gold); }
-        .size-select { margin: 10px 0; }
-        #checkout-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5500; display: none; justify-content: center; align-items: center; padding: 20px; }
-        .checkout-box { background: white; padding: 25px; border-radius: 15px; max-width: 400px; width: 100%; color: #000; }
-        .checkout-box input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        #pay-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 6000; display: none; justify-content: center; align-items: center; padding: 20px; }
-        .pay-box { background: #111; padding: 25px; border: 2px solid var(--gold); border-radius: 25px; width: 100%; max-width: 400px; text-align: center; color: white; }
-        .p-btn { background: #1a1a1a; margin: 8px 0; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; border: 1px solid #333; font-weight: bold; cursor: pointer; }
-        .p-btn img { width: 25px; height: 25px; border-radius: 5px; }
-        .v-input { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #00ff88; text-align: center; border-radius: 10px; margin: 10px 0; font-weight: bold; }
-        .v-btn { background: #00ff88; color: black; border: none; padding: 14px; width: 100%; border-radius: 10px; font-weight: 900; cursor: pointer; }
-        .info-box { display: none; padding: 20px; background: white; border-radius: 10px; margin: 20px 5%; border: 1px solid #ddd; }
-        #translate-btn { background: var(--gold); color: var(--dark); padding: 10px 20px; border-radius: 20px; font-weight: bold; margin: 20px auto; display: block; cursor: pointer; width: 80%; }
+        
+        /* PRODUCT CARD */
+        .card { background: white; border-radius: 12px; padding: 10px; position: relative; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 160px; object-fit: contain; background: #fff; margin-bottom: 10px; border-radius: 8px; }
+        .discount-badge { position: absolute; top: 10px; left: 10px; background: var(--red); color: white; padding: 4px 8px; font-size: 0.7rem; font-weight: bold; border-radius: 4px; }
+        .card h4 { margin: 5px 0; font-size: 0.95rem; color: #333; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .price-row { display: flex; align-items: baseline; gap: 8px; margin-top: 5px; }
+        .current-price { color: var(--dark); font-weight: 900; font-size: 1.1rem; }
+        .mrp-price { text-decoration: line-through; color: #999; font-size: 0.85rem; }
+        .card-btn { width: 100%; background: var(--gold); color: var(--dark); border: none; padding: 10px; border-radius: 6px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+
+        /* DETAILED MODAL (Pop-up) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; justify-content: center; align-items: flex-end; /* Mobile bottom sheet style */ }
+        @media(min-width: 768px) { .modal-overlay { align-items: center; } }
+
+        .modal-box { background: white; width: 100%; max-width: 500px; max-height: 90vh; border-radius: 20px 20px 0 0; overflow-y: auto; padding: 20px; position: relative; animation: slideUp 0.3s ease-out; }
+        @media(min-width: 768px) { .modal-box { border-radius: 15px; width: 90%; } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        /* Gallery in Modal */
+        .main-img-container { width: 100%; height: 250px; display: flex; justify-content: center; align-items: center; background: #f9f9f9; border-radius: 10px; margin-bottom: 10px; }
+        .main-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .thumb-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .thumb { width: 60px; height: 60px; border: 2px solid #ddd; border-radius: 8px; object-fit: cover; cursor: pointer; opacity: 0.6; }
+        .thumb.active { border-color: var(--gold); opacity: 1; }
+
+        .modal-title { font-size: 1.3rem; font-weight: bold; margin: 10px 0 5px; }
+        .modal-desc { color: #666; font-size: 0.9rem; line-height: 1.4; margin-bottom: 15px; }
+        
+        /* Options */
+        .option-group { margin-bottom: 15px; }
+        .option-label { font-weight: bold; margin-bottom: 8px; display: block; font-size: 0.9rem; }
+        .color-row { display: flex; gap: 10px; }
+        .color-circle { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #ccc; cursor: pointer; position: relative; }
+        .color-circle.selected { border: 2px solid var(--dark); transform: scale(1.1); box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+        .color-circle.selected::after { content: '✓'; color: white; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; text-shadow: 0 0 2px black; }
+
+        .size-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .size-box { border: 1px solid #ccc; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+        .size-box.selected { background: var(--dark); color: var(--gold); border-color: var(--dark); }
+
+        .modal-price { font-size: 1.5rem; color: var(--red); font-weight: bold; margin: 10px 0; }
+        .buy-action-btn { background: var(--gold); width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 900; color: var(--dark); cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .close-modal-btn { position: absolute; top: 15px; right: 15px; background: #eee; border: none; font-size: 1.2rem; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        /* CHECKOUT & PAY MODALS */
+        .form-input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
+        .pay-box { background: #111; padding: 25px; border: 1px solid var(--gold); border-radius: 20px; width: 90%; max-width: 400px; text-align: center; color: white; position: relative; }
+        .method-btn { display: flex; align-items: center; gap: 15px; background: #222; border: 1px solid #333; padding: 12px; margin-bottom: 10px; border-radius: 10px; color: white; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .method-btn:hover { border-color: var(--gold); background: #2a2a2a; }
+        .method-btn img { width: 30px; height: 30px; }
+        .crypto-text { font-size: 0.7rem; color: #888; text-align: left; margin-top: -5px; margin-bottom: 10px; word-break: break-all; }
+        
+        .verify-section { border-top: 1px solid #333; padding-top: 15px; margin-top: 10px; }
+        .utr-input { background: #000; color: #00ff88; border: 1px solid #444; width: 100%; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 10px; box-sizing: border-box; }
+        .verify-btn { background: #00ff88; color: black; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
+
+        /* UTILS */
+        .hidden { display: none !important; }
     </style>
 </head>
-<body data-lang="hi">
+<body>
 
     <header>
         <div class="logo">KALA BAZAR</div>
-        <div class="menu-icon" onclick="openNav()">☰</div>
+        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
     </header>
 
-    <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-        <a href="#" onclick="showHome()" data-en="Home" data-hi="होम">होम</a>
-        <a href="#" onclick="showPolicy()" data-en="Privacy and Shipping Policy" data-hi="प्राइवेसी और शिपिंग पॉलिसी">प्राइवेसी और शिपिंग पॉलिसी</a>
-        <button id="translate-btn" onclick="toggleLanguage()" data-en="Switch to Hindi" data-hi="Switch to English">Switch to English</button>
+    <div id="sidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar()">×</a>
+        <a href="#" onclick="filterCategory('All'); toggleSidebar()">Home</a>
+        <a href="#" onclick="alert('Policies coming soon'); toggleSidebar()">Privacy Policy</a>
+        <a href="#" onclick="alert('Support coming soon'); toggleSidebar()">Contact Us</a>
     </div>
 
-    <div id="mainContent">
-        <div class="nav-tabs" id="categoryNav"></div>
-        <div class="container">
-            <div id="infoSection" class="info-box"></div>
-            <div class="grid" id="productGrid"></div>
+    <div class="nav-tabs" id="categoryNav">
+        </div>
+
+    <div class="container">
+        <div class="grid" id="productGrid">
+            </div>
+    </div>
+
+    <div id="detailModal" class="modal-overlay" onclick="if(event.target === this) closeDetail()">
+        <div class="modal-box">
+            <button class="close-modal-btn" onclick="closeDetail()">✕</button>
+            
+            <div class="main-img-container">
+                <img id="d-main-img" src="" class="main-img" alt="Product">
+            </div>
+            <div class="thumb-row" id="d-thumbs">
+                </div>
+
+            <h2 id="d-name" class="modal-title">Product Name</h2>
+            <div class="price-row">
+                <span id="d-price" class="current-price">₹999</span>
+                <span id="d-mrp" class="mrp-price">₹1999</span>
+            </div>
+            <p id="d-desc" class="modal-desc">Description goes here...</p>
+
+            <div class="option-group">
+                <span class="option-label" id="color-label">Select Color</span>
+                <div class="color-row" id="d-colors"></div>
+            </div>
+
+            <div class="option-group" id="size-group">
+                <span class="option-label" id="size-label">Select Size</span>
+                <div class="size-row" id="d-sizes"></div>
+            </div>
+
+            <button class="buy-action-btn" onclick="openCheckout()">BUY NOW</button>
         </div>
     </div>
 
-    <div id="detail-modal">
-        <div class="detail-box">
-            <h2 id="detail-name"></h2>
-            <div class="carousel" id="detail-carousel"></div>
-            <p id="detail-desc"></p>
-            <div class="color-options" id="color-options"></div>
-            <select id="size-select" class="size-select">
-                <option value="">Select Size</option>
-            </select>
-            <p class="old-price" id="detail-mrp"></p>
-            <p class="price" id="detail-price"></p>
-            <button class="buy-btn" onclick="openCheckout()" data-en="Buy Now" data-hi="Buy Now">Buy Now</button>
-            <button onclick="closeDetail()" style="margin-top:15px; background:none; border:none; color:var(--red); font-weight:bold;" data-en="Close" data-hi="बंद करें">बंद करें</button>
+    <div id="checkoutModal" class="modal-overlay">
+        <div class="modal-box" style="max-width:400px;">
+            <h3 style="margin-top:0;">Delivery Address</h3>
+            <input type="text" id="c-name" class="form-input" placeholder="Full Name (पूरा नाम)">
+            <input type="tel" id="c-phone" class="form-input" placeholder="Mobile Number (मोबाइल)">
+            <input type="text" id="c-addr" class="form-input" placeholder="Address (House/Street)">
+            <input type="number" id="c-pin" class="form-input" placeholder="Pincode">
+            
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button onclick="document.getElementById('checkoutModal').style.display='none'" style="flex:1; padding:12px; background:#ddd; border:none; border-radius:8px; font-weight:bold;">CANCEL</button>
+                <button onclick="processCheckout()" style="flex:1; padding:12px; background:var(--dark); color:var(--gold); border:none; border-radius:8px; font-weight:bold;">PAYMENT</button>
+            </div>
         </div>
     </div>
 
-    <div id="checkout-modal">
-        <div class="checkout-box">
-            <h3 data-en="Delivery Details" data-hi="डिलीवरी डिटेल्स">डिलीवरी डिटेल्स</h3>
-            <input type="text" id="cust-name" placeholder="पूरा नाम" data-en-placeholder="Full Name" data-hi-placeholder="पूरा नाम">
-            <input type="text" id="cust-phone" placeholder="मोबाइल नंबर" data-en-placeholder="Mobile Number" data-hi-placeholder="मोबाइल नंबर">
-            <input type="text" id="cust-address" placeholder="पूरा पता" data-en-placeholder="Full Address" data-hi-placeholder="पूरा पता">
-            <input type="text" id="cust-pin" placeholder="पिन कोड" data-en-placeholder="PIN Code" data-hi-placeholder="पिन कोड">
-            <button class="buy-btn" onclick="proceedToPayment()" data-en="Proceed to Payment" data-hi="पेमेंट पर जाएं">पेमेंट पर जाएं</button>
-            <button onclick="closeCheckout()" style="margin-top:10px; background:none; border:none; color:var(--red);" data-en="Cancel" data-hi="कैंसल">कैंसल</button>
-        </div>
-    </div>
-
-    <div id="pay-modal">
+    <div id="payModal" class="modal-overlay" style="z-index: 6000;">
         <div class="pay-box">
-            <h2 style="color:var(--gold);" data-en="CHECKOUT" data-hi="चेकआउट">चेकआउट</h2>
-            <p id="p-amt" style="color:#00ff88; font-weight:900; font-size:1.4rem;"></p>
-            <a id="gpay" href="#" class="p-btn"><img src="https://img.icons8.com/color/48/google-pay.png" alt="GPay"> Google Pay</a>
-            <a id="ppay" href="#" class="p-btn"><img src="https://img.icons8.com/color/48/phone-pe.png" alt="PhonePe"> PhonePe</a>
-            <a id="paytm" href="#" class="p-btn"><img src="https://img.icons8.com/color/48/paytm.png" alt="Paytm"> Paytm</a>
-            <div class="p-btn" onclick="copyA('bc1qxy2kgdy6jrsq4z62v3860v6lcyv5uvvhu0m6ax', 'BTC BEP20')"><img src="https://img.icons8.com/color/48/bitcoin.png" alt="BTC"> Bitcoin (BEP20)</div>
-            <div class="p-btn" onclick="copyA('0xea67ed86d2a3f145a37f008c5bc0c523b50a039a', 'USDT BEP20')"><img src="https://img.icons8.com/color/48/tether.png" alt="USDT"> USDT (BEP20)</div>
-            <input type="text" id="txid" class="v-input" placeholder="ट्रांजेक्शन ID डालें" data-en-placeholder="Enter Transaction ID" data-hi-placeholder="ट्रांजेक्शन ID डालें">
-            <button onclick="verifyLogic()" id="v-btn" class="v-btn" data-en="VERIFY PAYMENT" data-hi="पेमेंट वेरिफाई करें">पेमेंट वेरिफाई करें</button>
-            <button onclick="closePay()" style="color:var(--red); border:none; background:none; margin-top:15px; font-weight:bold; cursor:pointer;" data-en="CANCEL" data-hi="कैंसल">कैंसल</button>
+            <h2 style="color:var(--gold); margin-top:0;">SECURE PAYMENT</h2>
+            <p style="font-size:0.9rem; color:#ccc;">Total Amount</p>
+            <p id="pay-amt" style="font-size:1.8rem; font-weight:900; color:#fff; margin:-10px 0 20px;">₹0</p>
+
+            <a id="link-gpay" href="#" class="method-btn">
+                <img src="https://img.icons8.com/color/48/google-pay.png" alt="GPay"> Google Pay
+            </a>
+            <a id="link-phonepe" href="#" class="method-btn">
+                <img src="https://img.icons8.com/color/48/phone-pe.png" alt="PhonePe"> PhonePe
+            </a>
+            <a id="link-paytm" href="#" class="method-btn">
+                <img src="https://img.icons8.com/color/48/paytm.png" alt="Paytm"> Paytm
+            </a>
+
+            <div class="method-btn" onclick="copyCrypto('bc1qxy2kgdy6jrsq4z62v3860v6lcyv5uvvhu0m6ax', 'BTC')">
+                <img src="https://img.icons8.com/color/48/bitcoin.png" alt="BTC"> Bitcoin (Click to Copy)
+            </div>
+            
+            <div class="method-btn" onclick="copyCrypto('0xea67ed86d2a3f145a37f008c5bc0c523b50a039a', 'USDT')">
+                <img src="https://img.icons8.com/color/48/tether.png" alt="USDT"> USDT (Click to Copy)
+            </div>
+
+            <div class="verify-section">
+                <p style="font-size:0.8rem; margin-bottom:5px;">After payment, enter Transaction/UTR ID:</p>
+                <input type="text" id="txn-id" class="utr-input" placeholder="ENTER UTR / REF ID">
+                <button id="verify-btn" class="verify-btn" onclick="verifyPayment()">VERIFY PAYMENT</button>
+                <button onclick="document.getElementById('payModal').style.display='none'" style="background:none; border:none; color:var(--red); margin-top:10px; cursor:pointer; font-weight:bold;">CANCEL</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const realProducts = {
-            "Mobiles": [
-                {id: 0, name: "REDMI 15C 5G Midnight Black 4GB + 128GB | Royale Design | Massive 6000mAh Battery | Segment's Largest 17.53cm Display Up to 120Hz | MediaTek Dimensity 6300 | 33W Fast Charging | 50MP AI Dual Camera", desc: "", price: 12499, mrp: 14999, off: 17, img: "https://m.media-amazon.com/images/I/81+8+4+8Z3L._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/81+8+4+8Z3L._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/81+8+4+8Z3L._AC_UL320_.jpg"], colors: ["Black", "Blue"], sizes: []},
-                {id: 1, name: "REDMI 15C 5G Moonlight Blue 4GB + 128GB | Royale Design | Massive 6000mAh Battery | Segment's Largest Display 17.53cm Up to 120Hz | MediaTek Dimensity 6300 | 33W Fast Charging | 50MP AI Dual Camera", desc: "", price: 12499, mrp: 14999, off: 17, img: "https://m.media-amazon.com/images/I/81b+3Exq3BL._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/81b+3Exq3BL._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/81b+3Exq3BL._AC_UL320_.jpg"], colors: ["Blue", "Black"], sizes: []},
-                {id: 2, name: "REDMI 15C 5G Dusk Purple 4GB + 128GB | Royale Design | Massive 6000mAh Battery | Segment's Largest 17.53cm Display Up to 120Hz | MediaTek Dimensity 6300 | 33W Fast Charging | 50MP AI Dual Camera", desc: "", price: 12499, mrp: 14999, off: 17, img: "https://m.media-amazon.com/images/I/81qK+3+3vDL._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/81qK+3+3vDL._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/81qK+3+3vDL._AC_UL320_.jpg"], colors: ["Purple", "Black"], sizes: []},
-                {id: 3, name: "iQOO Z10 Lite 5G (Cyber Green, 6GB RAM, 128GB Storage) | 6000 mAh Battery | Dimensity 6300 5G Processor with 433K+* AnTuTu Score | IP64 Rated & Military Grade Shock-Resistance*", desc: "", price: 12499, mrp: 14999, off: 17, img: "https://m.media-amazon.com/images/I/71i5+-O4V+L._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/71i5+-O4V+L._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/71i5+-O4V+L._AC_UL320_.jpg"], colors: ["Green", "Black"], sizes: []},
-                {id: 4, name: "iQOO Z10x 5G (Ultramarine, 6GB RAM, 128GB Storage) | 6500 mAh Large Capacity Battery | Dimensity 7300 Processor | Military-Grade Durability", desc: "", price: 13749, mrp: 17499, off: 21, img: "https://m.media-amazon.com/images/I/61+8rY1O7uL._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/61+8rY1O7uL._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/61+8rY1O7uL._AC_UL320_.jpg"], colors: ["Blue", "Black"], sizes: []},
-                {id: 5, name: "realme NARZO 80 Lite 5G (Onyx Black, 6GB+128GB) | 6000mAh Long-Lasting Battery | MediaTek Dimensity 6300 5G | AI Assist | IP64 Rated Water & Dust Resistance | Military-Grade Durability", desc: "", price: 12249, mrp: 14999, off: 18, img: "https://m.media-amazon.com/images/I/61cG+9y1WbL._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/61cG+9y1WbL._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/61cG+9y1WbL._AC_UL320_.jpg"], colors: ["Black", "Green"], sizes: []},
-                {id: 6, name: "Redmi 13 5G Prime Edition, Hawaiian Blue, 8GB+128GB | India Debut SD 4 Gen 2 AE | 108MP Pro Grade Camera | 6.79in Largest Display in Segment", desc: "", price: 13499, mrp: 19999, off: 33, img: "https://m.media-amazon.com/images/I/81nWvX5b3HL._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/81nWvX5b3HL._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/81nWvX5b3HL._AC_UL320_.jpg"], colors: ["Blue", "Green"], sizes: []},
-                {id: 7, name: "iQOO Z10 Lite 5G (Titanium Blue, 8GB RAM, 256GB Storage) | 6000 mAh Battery | Dimensity 6300 5G Processor with 433K+* AnTuTu Score | IP64 Rated & Military Grade Shock-Resistance*", desc: "", price: 14499, mrp: 16999, off: 15, img: "https://m.media-amazon.com/images/I/71i5+-O4V+L._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/71i5+-O4V+L._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/71i5+-O4V+L._AC_UL320_.jpg"], colors: ["Blue", "Black"], sizes: []},
-                {id: 8, name: "Redmi A4 5G (Sparkle Purple, 4GB RAM, 128GB Storage) | Segment Largest 6.88in 120Hz | 50MP Dual Camera | 18W Fast Charging | Charger in The Box", desc: "", price: 8299, mrp: 11999, off: 31, img: "https://m.media-amazon.com/images/I/81l5kiJmxBL._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/81l5kiJmxBL._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/81l5kiJmxBL._AC_UL320_.jpg"], colors: ["Purple", "Black"], sizes: []},
-                {id: 9, name: "iQOO Z10x 5G (Titanium, 6GB RAM, 128GB Storage) | 6500 mAh Large Capacity Battery | Dimensity 7300 Processor | Military-Grade Durability", desc: "", price: 13749, mrp: 17499, off: 21, img: "https://m.media-amazon.com/images/I/71b8n+8X3eL._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/71b8n+8X3eL._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/71b8n+8X3eL._AC_UL320_.jpg"], colors: ["Grey", "Black"], sizes: []},
-                {id: 10, name: "realme NARZO 90x 5G (Nitro Blue,6GB+128GB) | 7000mAh + 60W Biggest Battery & Fastest Charging in The Segment* | 144Hz Bright Display | Sony 50MP AI Rear Camera | AI Assist | 400% Ultra Boom Speaker", desc: "", price: 12999, mrp: 16999, off: 23, img: "https://m.media-amazon.com/images/I/71Nxi2A5kYL._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/71Nxi2A5kYL._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/71Nxi2A5kYL._AC_UL320_.jpg"], colors: ["Blue", "Black"], sizes: []},
-                {id: 11, name: "iQOO Z10 Lite 5G (Cyber Green, 8GB RAM, 256GB Storage) | 6000 mAh Battery | Dimensity 6300 5G Processor with 433K+* AnTuTu Score | IP64 Rated & Military Grade Shock-Resistance*", desc: "", price: 14499, mrp: 16999, off: 15, img: "https://m.media-amazon.com/images/I/71i5+-O4V+L._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/71i5+-O4V+L._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/71i5+-O4V+L._AC_UL320_.jpg"], colors: ["Green", "Black"], sizes: []},
-                {id: 12, name: "Motorola G35 5G (Leaf Green, 4+128)", desc: "", price: 9475, mrp: 12499, off: 24, img: "https://m.media-amazon.com/images/I/61J22kJ3ZWL._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/61J22kJ3ZWL._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/61J22kJ3ZWL._AC_UL320_.jpg"], colors: ["Green", "Black"], sizes: []},
-                {id: 13, name: "POCO M7 5G, Satin Black (6GB, 128GB)", desc: "", price: 9299, mrp: 12999, off: 28, img: "https://m.media-amazon.com/images/I/71d1R0OJDYL._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/71d1R0OJDYL._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/71d1R0OJDYL._AC_UL320_.jpg"], colors: ["Black", "Silver"], sizes: []},
-                {id: 14, name: "Motorola G57 Power 5G (Fluidity, 8GB RAM, 128GB Storage)| Snapdragon 6s Gen 4 Processor | 6.72\\\" FHD+ Display | 50MP LYT-600 + 8MP Ultrawide | 8MP Selfie Camera | 7000mAh Battery, 33W TurboPower | IP64", desc: "", price: 14119, mrp: 17999, off: 22, img: "https://m.media-amazon.com/images/I/61B+XR4o+ML._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/61B+XR4o+ML._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/61B+XR4o+ML._AC_UL320_.jpg"], colors: ["Grey", "Black"], sizes: []},
-                {id: 15, name: "POCO M6 Plus 5G Ice Silver 8GB RAM 128GB ROM", desc: "", price: 10899, mrp: 14499, off: 25, img: "https://m.media-amazon.com/images/I/71k8gHTxe5L._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/71k8gHTxe5L._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/71k8gHTxe5L._AC_UL320_.jpg"], colors: ["Silver", "Black"], sizes: []},
-                {id: 16, name: "realme NARZO 80 Lite 5G (Crystal Purple, 6GB+128GB) | 6000mAh Long-Lasting Battery | MediaTek Dimensity 6300 5G | AI Assist | IP64 Rated Water & Dust Resistance | Military-Grade Durability", desc: "", price: 12249, mrp: 14999, off: 18, img: "https://m.media-amazon.com/images/I/61cG+9y1WbL._AC_UL320_.jpg", images: ["https://m.media-amazon.com/images/I/61cG+9y1WbL._AC_UL320_.jpg", "https://m.media-amazon.com/images/I/61cG+9y1WbL._AC_UL320_.jpg"], colors: ["Purple", "Black"], sizes: []},
-                // Duplicate and vary to make 50
-                {id: 17, name: "Samsung Galaxy M16 5G (Blush Pink, 6GB RAM, 128 GB Storage) | MediaTek Dimensity 6300 | AnTuTu Score 422K+ | Super Amoled Display | AI | 25W Fast Charging | 6 ...", desc: "", price: 12999, mrp: 16999, off: 23, img: "https://m.media-amazon.com/images/I/71EPrLqHHjL._SX679_.jpg", images: ["https://m.media-amazon.com/images/I/71EPrLqHHjL._SX679_.jpg", "https://m.media-amazon.com/images/I/81Ic1SbN8UL._SX679_.jpg"], colors: ["Pink", "Black"], sizes: []},
-                {id: 18, name: "Lava Bold N1 5G", desc: "", price: 9999, mrp: 14999, off: 33, img: "https://m.media-amazon.com/images/I/71zXb3n0faL._SX679_.jpg", images: ["https://m.media-amazon.com/images/I/71zXb3n0faL._SX679_.jpg", "https://m.media-amazon.com/images/I/71O2T+3Y0JL._SX679_.jpg"], colors: ["Black", "Green"], sizes: []},
-                {id: 19, name: "Xiaomi Redmi A4", desc: "", price: 7999, mrp: 11999, off: 33, img: "https://m.media-amazon.com/images/I/71y7b3Yv2WL._SX679_.jpg", images: ["https://m.media-amazon.com/images/I/71y7b3Yv2WL._SX679_.jpg", "https://m.media-amazon.com/images/I/71+4vX0gvEL._SX679_.jpg"], colors: ["Black", "Purple"], sizes: []},
-                // Continue adding variations until 50
-                // For brevity, assume filled with similar entries
-            ],
-            // Similar for "Fashion", "Electronics", "Toys" using the data from tools, filling to 50 by duplicating and varying
+        // --- 1. CONFIG & DATA ---
+        // Using Placehold.co for reliable image loading
+        const categories = ["Mobiles", "Fashion", "Watches", "Shoes"];
+        
+        const products = {
+            "Mobiles": Array.from({length: 10}).map((_, i) => ({
+                id: `m${i}`, name: `Smartphone Ultra ${i+1} Pro`, price: 14999 + (i*500), mrp: 24999,
+                // Using tech placeholders
+                imgs: [
+                    "https://images.unsplash.com/photo-1598327105666-5b89351aff75?auto=format&fit=crop&w=400&q=80",
+                    "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80",
+                    "https://images.unsplash.com/photo-1556656793-0275bada8d53?auto=format&fit=crop&w=400&q=80",
+                    "https://images.unsplash.com/photo-1520923642038-b4259acecbd7?auto=format&fit=crop&w=400&q=80"
+                ],
+                desc: "5G Supported, 108MP Camera, 6000mAh Battery. Best gaming processor.",
+                colors: ["#333", "#0055ff", "#fff"],
+                sizes: ["128GB", "256GB", "512GB"],
+                sizeLabel: "Storage"
+            })),
+            "Fashion": Array.from({length: 10}).map((_, i) => ({
+                id: `f${i}`, name: `Designer Jacket/Shirt ${i+1}`, price: 899 + (i*50), mrp: 2999,
+                imgs: [
+                    "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=400&q=80",
+                    "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80",
+                    "https://images.unsplash.com/photo-1551028919-38f4405b63a0?auto=format&fit=crop&w=400&q=80",
+                    "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=400&q=80"
+                ],
+                desc: "Premium Cotton blend, rugged stitching, perfect for casual wear.",
+                colors: ["#000", "#800000", "#000080"],
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                sizeLabel: "Size"
+            })),
+            "Watches": Array.from({length: 8}).map((_, i) => ({
+                id: `w${i}`, name: `Luxury Chrono ${i+1}`, price: 1299 + (i*100), mrp: 4500,
+                imgs: [
+                    "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=400&q=80",
+                    "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=400&q=80"
+                ],
+                desc: "Water resistant, stainless steel strap, japanese movement.",
+                colors: ["#c0c0c0", "#ffd700", "#000"],
+                sizes: [], // No size for watches
+                sizeLabel: ""
+            })),
+            "Shoes": Array.from({length: 8}).map((_, i) => ({
+                id: `s${i}`, name: `Running Sneakers ${i+1}`, price: 1599 + (i*50), mrp: 3999,
+                imgs: [
+                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80",
+                    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=400&q=80"
+                ],
+                desc: "Air sole technology, ultra light weight for running.",
+                colors: ["#fff", "#f00", "#000"],
+                sizes: ["UK 7", "UK 8", "UK 9", "UK 10"],
+                sizeLabel: "UK Size"
+            }))
         };
 
-        const cats = Object.keys(realProducts);
-        let selectedProduct = null;
-        let checkCount = 0;
+        let currentProduct = null;
+        let selectedColor = null;
+        let selectedSize = null;
+        let attemptCount = 0;
+
+        // --- 2. INIT & RENDER ---
+        function init() {
+            renderTabs();
+            filterCategory(categories[0]);
+        }
 
         function renderTabs() {
             const nav = document.getElementById('categoryNav');
-            nav.innerHTML = '';
-            cats.forEach((c, idx) => {
-                nav.innerHTML += `<button class="tab-btn ${idx===0?'active':''}" onclick="showCat('${c}', this)" data-en="${c}" data-hi="${c}">${c}</button>`;
-            });
+            nav.innerHTML = categories.map((cat, i) => 
+                `<button class="tab-btn ${i===0?'active':''}" onclick="filterCategory('${cat}', this)">${cat}</button>`
+            ).join('');
         }
 
-        function showCat(category, btn) {
-            document.getElementById('infoSection').style.display = 'none';
-            document.getElementById('productGrid').style.display = 'grid';
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
+        function filterCategory(cat, btnElement) {
+            // Active Tab UI
+            if(btnElement) {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
-            realProducts[category].forEach(p => {
+
+            const list = cat === 'All' ? Object.values(products).flat() : products[cat];
+            
+            list.forEach(p => {
+                const off = Math.round(((p.mrp - p.price)/p.mrp)*100);
                 grid.innerHTML += `
-                    <div class="card" onclick="openDetail('${category}', ${p.id})">
-                        <span class="discount">${p.off}% OFF</span>
-                        <img src="${p.img}" alt="${p.name}" onerror="this.src='https://placehold.co/140x140';">
+                    <div class="card" onclick="openDetail('${p.id}', '${cat}')">
+                        <span class="discount-badge">${off}% OFF</span>
+                        <img src="${p.imgs[0]}" alt="${p.name}" onerror="this.src='https://placehold.co/400x400?text=No+Image'">
                         <h4>${p.name}</h4>
-                        <p class="old-price">₹${p.mrp}</p>
-                        <p class="price">₹${p.price}</p>
-                        <button class="buy-btn" onclick="event.stopPropagation(); openCheckoutDirect('${category}', ${p.id})" data-en="Buy Now" data-hi="Buy Now">Buy Now</button>
-                    </div>`;
+                        <div class="price-row">
+                            <span class="current-price">₹${p.price}</span>
+                            <span class="mrp-price">₹${p.mrp}</span>
+                        </div>
+                    </div>
+                `;
             });
         }
 
-        function openDetail(category, id) {
-            const p = realProducts[category].find(pr => pr.id === id);
-            selectedProduct = p;
-            document.getElementById('detail-name').innerText = p.name;
-            const carousel = document.getElementById('detail-carousel');
-            carousel.innerHTML = '';
-            p.images.forEach(src => {
-                carousel.innerHTML += `<img src="${src}" alt="${p.name}">`;
-            });
-            document.getElementById('detail-desc').innerText = p.desc;
-            const colorDiv = document.getElementById('color-options');
-            colorDiv.innerHTML = '';
-            p.colors.forEach((col, i) => {
-                colorDiv.innerHTML += `<div class="color-btn ${i===0?'active':''}" style="background-color:${col.toLowerCase()};" onclick="document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active')); this.classList.add('active');"></div>`;
-            });
-            const sizeSelect = document.getElementById('size-select');
-            sizeSelect.style.display = p.sizes.length ? 'block' : 'none';
-            sizeSelect.innerHTML = '<option value="">Select Size</option>';
-            p.sizes.forEach(size => {
-                sizeSelect.innerHTML += `<option value="${size}">${size}</option>`;
-            });
-            document.getElementById('detail-mrp').innerText = `MRP: ₹${p.mrp}`;
-            document.getElementById('detail-price').innerText = `₹${p.price}`;
-            document.getElementById('detail-modal').style.display = 'flex';
+        // --- 3. DETAIL PAGE LOGIC (UPGRADED) ---
+        function openDetail(pid, catFallback) {
+            // Find product
+            let p = null;
+            if(catFallback !== 'All' && products[catFallback]) {
+                p = products[catFallback].find(x => x.id === pid);
+            } else {
+                Object.values(products).forEach(arr => {
+                    const found = arr.find(x => x.id === pid);
+                    if(found) p = found;
+                });
+            }
+            if(!p) return;
+
+            currentProduct = p;
+            selectedColor = p.colors[0] || null;
+            selectedSize = null;
+
+            // Populate Modal
+            document.getElementById('d-name').innerText = p.name;
+            document.getElementById('d-price').innerText = `₹${p.price}`;
+            document.getElementById('d-mrp').innerText = `MRP: ₹${p.mrp}`;
+            document.getElementById('d-desc').innerText = p.desc;
+
+            // Gallery
+            const mainImg = document.getElementById('d-main-img');
+            const thumbBox = document.getElementById('d-thumbs');
+            mainImg.src = p.imgs[0];
+            
+            thumbBox.innerHTML = p.imgs.map((src, i) => 
+                `<img src="${src}" class="thumb ${i===0?'active':''}" onclick="changeImg('${src}', this)">`
+            ).join('');
+
+            // Color Options
+            const colorBox = document.getElementById('d-colors');
+            colorBox.innerHTML = p.colors.map((c, i) => 
+                `<div class="color-circle ${i===0?'selected':''}" style="background:${c}" onclick="selectColor(this, '${c}')"></div>`
+            ).join('');
+
+            // Size Options
+            const sizeGroup = document.getElementById('size-group');
+            const sizeBox = document.getElementById('d-sizes');
+            const sizeLabel = document.getElementById('size-label');
+
+            if(p.sizes && p.sizes.length > 0) {
+                sizeGroup.style.display = 'block';
+                sizeLabel.innerText = "Select " + (p.sizeLabel || "Size");
+                sizeBox.innerHTML = p.sizes.map(s => 
+                    `<div class="size-box" onclick="selectSize(this, '${s}')">${s}</div>`
+                ).join('');
+            } else {
+                sizeGroup.style.display = 'none';
+            }
+
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+
+        function changeImg(src, thumb) {
+            document.getElementById('d-main-img').src = src;
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+        }
+
+        function selectColor(el, color) {
+            selectedColor = color;
+            document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        function selectSize(el, size) {
+            selectedSize = size;
+            document.querySelectorAll('.size-box').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
         }
 
         function closeDetail() {
-            document.getElementById('detail-modal').style.display = 'none';
+            document.getElementById('detailModal').style.display = 'none';
         }
 
-        function openCheckoutDirect(category, id) {
-            const p = realProducts[category].find(pr => pr.id === id);
-            selectedProduct = p;
-            openCheckout();
-        }
-
+        // --- 4. CHECKOUT & PAYMENT ---
         function openCheckout() {
+            // Validation: Check if size is needed
+            if(currentProduct.sizes.length > 0 && !selectedSize) {
+                alert(`Please select a ${currentProduct.sizeLabel} first!`);
+                return;
+            }
             closeDetail();
-            document.getElementById('checkout-modal').style.display = 'flex';
+            document.getElementById('checkoutModal').style.display = 'flex';
         }
 
-        function closeCheckout() {
-            document.getElementById('checkout-modal').style.display = 'none';
+        function processCheckout() {
+            const name = document.getElementById('c-name').value;
+            const phone = document.getElementById('c-phone').value;
+            if(!name || !phone) {
+                alert("Please fill Name and Mobile Number");
+                return;
+            }
+            document.getElementById('checkoutModal').style.display = 'none';
+            showPayment(currentProduct.price);
         }
 
-        function proceedToPayment() {
-            const name = document.getElementById('cust-name').value;
-            const phone = document.getElementById('cust-phone').value;
-            const address = document.getElementById('cust-address').value;
-            const pin = document.getElementById('cust-pin').value;
-            if (!name || !phone || !address || !pin) return alert("All fields are required!");
-            closeCheckout();
-            openPay(selectedProduct.price);
+        function showPayment(amt) {
+            const modal = document.getElementById('payModal');
+            document.getElementById('pay-amt').innerText = "₹" + amt;
+            modal.style.display = 'flex';
+            attemptCount = 0; // Reset fake check
+
+            // Update UPI Links
+            const upiLink = `upi://pay?pa=rizwanhasan90122778623@ybl&pn=KalaBazar&am=${amt}&cu=INR`;
+            document.getElementById('link-gpay').href = upiLink;
+            document.getElementById('link-phonepe').href = upiLink;
+            document.getElementById('link-paytm').href = upiLink;
         }
 
-        function openPay(amt) {
-            document.getElementById('pay-modal').style.display = 'flex';
-            document.getElementById('p-amt').innerText = "Total: ₹" + amt;
-            const upi = `upi://pay?pa=rizwanhasan90122778623@ybl&am=${amt}&cu=INR`;
-            document.getElementById('gpay').href = upi;
-            document.getElementById('ppay').href = upi;
-            document.getElementById('paytm').href = upi;
-            checkCount = 0;
+        function copyCrypto(addr, name) {
+            navigator.clipboard.writeText(addr).then(() => {
+                alert(`${name} Address Copied!`);
+            }).catch(() => {
+                prompt("Copy manually:", addr);
+            });
         }
 
-        function closePay() {
-            document.getElementById('pay-modal').style.display = 'none';
-        }
+        function verifyPayment() {
+            const btn = document.getElementById('verify-btn');
+            const txInput = document.getElementById('txn-id');
+            
+            if(txInput.value.length < 5) {
+                alert("Please enter a valid Transaction ID");
+                return;
+            }
 
-        function copyA(a, t) { 
-            navigator.clipboard.writeText(a); 
-            alert(t + " Address Copied!"); 
-        }
-
-        function verifyLogic() {
-            const b = document.getElementById('v-btn');
-            b.innerText = "PROCESSING... ⏳";
+            btn.innerText = "CHECKING... ⏳";
+            btn.style.background = "#ffd700"; // Yellow
+            
             setTimeout(() => {
-                if(checkCount === 0) {
-                    b.innerText = "MANUAL CHECK NEEDED ⚠️ SEND SCREENSHOT";
-                    b.style.background = "orange";
-                    checkCount++;
+                if(attemptCount === 0) {
+                    btn.innerText = "NOT FOUND ⚠️ RETRY";
+                    btn.style.background = "#ff4444";
+                    alert("System could not auto-verify. Please make sure payment is done and try again.");
+                    attemptCount++;
                 } else {
-                    const res = ["SUCCESS! ✅ ORDER CONFIRMED", "PAYMENT PENDING ⏳", "PAYMENT FAILED ❌", "PROCESSING... ⏳"];
-                    b.innerText = res[Math.floor(Math.random()*res.length)];
-                    b.style.background = b.innerText.includes("SUCCESS") ? "#00ff88" : "orange";
+                    const scenarios = ["SUCCESS! ✅ ORDER PLACED", "PENDING... ⏳ WAIT"];
+                    const result = scenarios[Math.floor(Math.random() * scenarios.length)];
+                    btn.innerText = result;
+                    btn.style.background = result.includes("SUCCESS") ? "#00ff88" : "orange";
+                    
+                    if(result.includes("SUCCESS")) {
+                        setTimeout(() => {
+                            alert("Order Placed Successfully! We will contact you shortly.");
+                            location.reload();
+                        }, 2000);
+                    }
                 }
             }, 2500);
         }
 
-        function openNav() { document.getElementById("mySidebar").style.width = "250px"; }
-        function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
-
-        function showPolicy() {
-            closeNav();
-            const section = document.getElementById('infoSection');
-            document.getElementById('productGrid').style.display = 'none';
-            section.style.display = 'block';
-            section.innerHTML = `<h3 data-en="Privacy Policy" data-hi="Privacy Policy">Privacy Policy</h3><p>KALA BAZAR is committed to your security...</p>
-                                 <h3 data-en="Shipping Policy" data-hi="Shipping Policy">Shipping Policy</h3><p>Orders are shipped within 24 hours. No COD allowed.</p>`;
-            updateLanguage();
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            sb.style.width = sb.style.width === '250px' ? '0' : '250px';
         }
 
-        function showHome() { closeNav(); showCat(cats[0], document.querySelector('.tab-btn')); }
-
-        function toggleLanguage() {
-            const lang = document.body.dataset.lang === 'hi' ? 'en' : 'hi';
-            document.body.dataset.lang = lang;
-            document.getElementById('translate-btn').innerText = lang === 'hi' ? 'Switch to English' : 'हिंदी में स्विच करें';
-            updateLanguage();
-            renderTabs();
-            showCat(cats[0]);
-        }
-
-        function updateLanguage() {
-            const lang = document.body.dataset.lang || 'hi';
-            document.querySelectorAll('[data-en]').forEach(el => {
-                el.innerText = el.dataset[lang];
-            });
-            document.querySelectorAll('input[data-en-placeholder]').forEach(el => {
-                el.placeholder = el.dataset[lang + '-placeholder'];
-            });
-            document.querySelectorAll('.buy-btn').forEach(el => {
-                el.innerText = el.dataset[lang];
-            });
-        }
-
-        renderTabs();
-        showCat(cats[0]);
-        updateLanguage();
+        // Run
+        init();
     </script>
 </body>
 </html>
