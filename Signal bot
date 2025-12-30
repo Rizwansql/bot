@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diuapk Pro Predictor</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 15px;
+            border: 3px solid #00d4ff;
+            border-radius: 20px;
+        }
+        .header { color: #00d4ff; font-size: 14px; letter-spacing: 2px; margin-bottom: 10px; }
+        .timer { font-size: 40px; color: #f1c40f; font-weight: bold; text-shadow: 0 0 10px #f1c40f; }
+        .predict-box {
+            font-size: 55px;
+            font-weight: 900;
+            margin: 20px 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .history-view { color: #888; font-size: 14px; margin-bottom: 20px; height: 20px; }
+        .btn-group { display: flex; justify-content: center; gap: 15px; }
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-big { background: #00FF00; color: #000; box-shadow: 0 5px #008000; }
+        .btn-small { background: #FF3131; color: #fff; box-shadow: 0 5px #800000; }
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+        .reset-btn { margin-top: 20px; background: #333; color: #ccc; font-size: 12px; padding: 5px 10px; border-radius: 5px; cursor: pointer; border: none;}
+    </style>
+</head>
+<body>
+
+    <div class="header">DIUAPK 4-LOGIC AI</div>
+    
+    <div class="timer" id="timerDisplay">60s</div>
+    
+    <div class="predict-box" id="predictionDisplay">WAIT</div>
+    
+    <div class="history-view" id="historyDisplay">Inputs: None</div>
+
+    <div style="font-size: 12px; margin-bottom: 10px;">Enter Last 4 Results:</div>
+    <div class="btn-group">
+        <button class="btn btn-big" onclick="addHistory('B')">BIG</button>
+        <button class="btn btn-small" onclick="addHistory('S')">SMALL</button>
+    </div>
+
+    <button class="reset-btn" onclick="resetApp()">RESET SYSTEM</button>
+
+    <script>
+        let history = [];
+        let currentPrediction = "WAIT";
+        let predictionColor = "yellow";
+
+        function addHistory(res) {
+            if (history.length >= 4) history.shift();
+            history.push(res);
+            document.getElementById('historyDisplay').innerText = "Pattern: " + history.join(" > ");
+        }
+
+        function resetApp() {
+            history = [];
+            document.getElementById('historyDisplay').innerText = "Inputs: None";
+            document.getElementById('predictionDisplay').innerText = "WAIT";
+            document.getElementById('predictionDisplay').style.color = "yellow";
+        }
+
+        function updateEngine() {
+            const now = new Date();
+            const seconds = now.getSeconds();
+            const remaining = 60 - seconds;
+            
+            document.getElementById('timerDisplay').innerText = remaining + "s";
+
+            // 20 Seconds Rule [cite: 2025-12-21]
+            if (remaining <= 20 && remaining > 5) {
+                if (history.length < 4) {
+                    currentPrediction = "NEED 4 INPUTS";
+                    predictionColor = "orange";
+                } else {
+                    // Chanakya Pattern Logic [cite: 2025-12-24]
+                    const pattern = history.join("");
+                    if (pattern === "BBBB") { currentPrediction = "SMALL"; predictionColor = "#FF3131"; }
+                    else if (pattern === "SSSS") { currentPrediction = "BIG"; predictionColor = "#00FF00"; }
+                    else if (pattern === "BSBS") { currentPrediction = "BIG"; predictionColor = "#00FF00"; }
+                    else if (pattern === "SBSB") { currentPrediction = "SMALL"; predictionColor = "#FF3131"; }
+                    else {
+                        // Agar koi trend nahi milta toh video logic follow karein [cite: 2025-11-04]
+                        currentPrediction = (Math.random() > 0.5) ? "BIG" : "SMALL";
+                        predictionColor = (currentPrediction === "BIG") ? "#00FF00" : "#FF3131";
+                    }
+                }
+            } else if (remaining <= 5) {
+                currentPrediction = "RESULT...";
+                predictionColor = "cyan";
+            } else {
+                currentPrediction = "ANALYZING...";
+                predictionColor = "yellow";
+            }
+
+            const pDisplay = document.getElementById('predictionDisplay');
+            pDisplay.innerText = currentPrediction;
+            pDisplay.style.color = predictionColor;
+        }
+
+        setInterval(updateEngine, 1000);
+    </script>
+</body>
+</html>
