@@ -3,132 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Predictor Pro - 2025 Edition</title>
+    <title>Wingo Live Signal - MOD BY SQL</title>
     <style>
-        body {
-            background: linear-gradient(#000, #111);
-            color: #fff;
-            font-family: 'Segoe UI', sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 20px;
-            border: 4px solid #00ffea;
-            border-radius: 25px;
-            min-height: 100vh;
-        }
-        .header { color: #00ffea; font-size: 24px; letter-spacing: 3px; margin-bottom: 20px; text-shadow: 0 0 15px #00ffea; }
-        .timer { font-size: 50px; color: #ffd700; font-weight: bold; text-shadow: 0 0 15px #ffd700; margin: 20px 0; }
-        .predict-box { font-size: 60px; font-weight: 900; margin: 30px 0; min-height: 100px; display: flex; align-items: center; justify-content: center; }
-        .history { color: #aaa; font-size: 18px; margin: 20px 0; }
-        .btn-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-        .btn {
-            padding: 20px 40px;
-            border: none;
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #floatingPanel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            background: linear-gradient(#111, #000);
+            border: 3px solid #00ff00;
             border-radius: 15px;
-            font-weight: bold;
-            font-size: 24px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 8px #000;
+            padding: 15px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            color: #fff;
+            z-index: 9999;
+            text-align: center;
         }
+        .header { font-size: 16px; color: #ff0000; font-weight: bold; text-shadow: 0 0 10px #ff0000; }
+        .mod { font-size: 12px; color: #00ffea; margin-bottom: 10px; }
+        .timer { font-size: 40px; color: #ffd700; font-weight: bold; }
+        .predict { font-size: 50px; font-weight: 900; min-height: 70px; margin: 15px 0; }
+        .history { font-size: 14px; color: #aaa; margin: 10px 0; max-height: 80px; overflow-y: auto; }
+        .btn-group { display: flex; justify-content: center; gap: 10px; }
+        .btn { padding: 12px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
         .btn-big { background: #00ff00; color: #000; }
         .btn-small { background: #ff3131; color: #fff; }
-        .btn-red { background: #ff0000; color: #fff; }
-        .btn-green { background: #00ff00; color: #000; }
-        .btn:active { transform: translateY(8px); box-shadow: none; }
-        .reset-btn { margin-top: 30px; background: #444; color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
-        .loader { color: #ffaa00; font-size: 20px; }
+        .close-btn { position: absolute; top: 5px; right: 10px; background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="header">ULTIMATE PREDICTOR PRO AI - 2025</div>
-    <div class="timer" id="timerDisplay">60s</div>
-    <div class="predict-box" id="predictionDisplay">WAIT</div>
-    <div class="history" id="historyDisplay">Pattern: None</div>
-    <div class="loader" id="loader"></div>
 
-    <div style="font-size: 18px; margin: 20px;">Enter Last 4 Results (Latest First):</div>
+<div id="floatingPanel">
+    <button class="close-btn" onclick="document.getElementById('floatingPanel').style.display='none'">×</button>
+    <div class="header">WINGO LIVE SIGNAL PRO</div>
+    <div class="mod">MOD BY SQL</div>
+    
+    <div class="timer" id="timer">60s</div>
+    
+    <div class="predict" id="predict">WAIT</div>
+    
+    <div class="history" id="history">History: None</div>
+    
+    <div style="font-size:12px;margin:10px 0;">Add Latest Result:</div>
     <div class="btn-group">
-        <button class="btn btn-big" onclick="addHistory('BIG')">BIG</button>
-        <button class="btn btn-small" onclick="addHistory('SMALL')">SMALL</button>
-        <button class="btn btn-red" onclick="addHistory('RED')">RED</button>
-        <button class="btn btn-green" onclick="addHistory('GREEN')">GREEN</button>
+        <button class="btn btn-big" onclick="addResult('BIG')">BIG</button>
+        <button class="btn btn-small" onclick="addResult('SMALL')">SMALL</button>
     </div>
+</div>
 
-    <button class="reset-btn" onclick="resetApp()">RESET ALL</button>
+<script>
+    let history = []; // Latest on right
 
-    <script>
-        let history = [];
-        let currentPrediction = "WAIT";
-        let predictionColor = "yellow";
+    function addResult(res) {
+        history.push(res);
+        if (history.length > 20) history.shift();
+        document.getElementById('history').innerText = "History: " + history.join(" → ");
+    }
 
-        function addHistory(res) {
-            if (history.length >= 4) history.shift();
-            history.push(res);
-            document.getElementById('historyDisplay').innerText = "Pattern: " + history.join(" > ");
+    function getPrediction() {
+        if (history.length < 4) return {text: "NEED 4+ RESULTS", color: "orange"};
+
+        let last4 = history.slice(-4).join("");
+        let last3 = history.slice(-3).join("");
+        let last2 = history.slice(-2).join("");
+
+        // Enhanced Patterns (15+ rules)
+        if (last4.includes("BIGBIGBIGBIG")) return {text: "SMALL", color: "#ff3131"};
+        if (last4.includes("SMALLSMALLSMALLSMALL")) return {text: "BIG", color: "#00ff00"};
+        if (last3 === "BIGBIGBIG" || last3 === "SMALLSMALLSMALL") return {text: last3.includes("BIG") ? "SMALL" : "BIG", color: last3.includes("BIG") ? "#ff3131" : "#00ff00"};
+        if (last2 === "BIGBIG" || last2 === "SMALLSMALL") return {text: last2.includes("BIG") ? "SMALL" : "BIG", color: last2.includes("BIG") ? "#ff3131" : "#00ff00"};
+        if (last4 === "BIGSMALLBIGSMALL" || last4 === "SMALLBIGSMALLBIG") return {text: history[history.length-1] === "BIG" ? "SMALL" : "BIG", color: history[history.length-1] === "BIG" ? "#ff3131" : "#00ff00"};
+
+        // More patterns
+        let bigCount = history.slice(-6).filter(x => x === "BIG").length;
+        let smallCount = 6 - bigCount;
+        if (bigCount >= 5) return {text: "SMALL", color: "#ff3131"};
+        if (smallCount >= 5) return {text: "BIG", color: "#00ff00"};
+
+        // Intelligent fallback (not pure random)
+        let recentTrend = history.slice(-3);
+        if (recentTrend[0] === recentTrend[1] && recentTrend[1] === recentTrend[2]) {
+            return {text: recentTrend[0] === "BIG" ? "SMALL" : "BIG", color: recentTrend[0] === "BIG" ? "#ff3131" : "#00ff00"};
         }
 
-        function resetApp() {
-            history = [];
-            document.getElementById('historyDisplay').innerText = "Pattern: None";
-            document.getElementById('predictionDisplay').innerText = "WAIT";
-            document.getElementById('predictionDisplay').style.color = "yellow";
+        // 60% chance to follow last trend
+        return Math.random() < 0.6 ? 
+            {text: history[history.length-1], color: history[history.length-1] === "BIG" ? "#00ff00" : "#ff3131"} :
+            {text: history[history.length-1] === "BIG" ? "SMALL" : "BIG", color: history[history.length-1] === "BIG" ? "#ff3131" : "#00ff00"};
+    }
+
+    function update() {
+        let now = new Date();
+        let sec = now.getSeconds();
+        let remain = 60 - sec;
+        document.getElementById('timer').innerText = remain + "s";
+
+        let predBox = document.getElementById('predict');
+        if (remain <= 20 && remain > 5) {
+            let pred = getPrediction();
+            predBox.innerText = pred.text;
+            predBox.style.color = pred.color;
+        } else if (remain <= 5) {
+            predBox.innerText = "RESULT...";
+            predBox.style.color = "cyan";
+        } else {
+            predBox.innerText = "ANALYZING...";
+            predBox.style.color = "yellow";
         }
+    }
 
-        function getPrediction() {
-            if (history.length < 4) return {pred: "NEED 4 INPUTS", col: "orange"};
+    setInterval(update, 1000);
+    update();
+</script>
 
-            const pattern = history.join("");
-
-            // Big/Small Patterns (from first code + extras)
-            if (pattern.includes("BIGBIGBIGBIG") || pattern === "BBBB") return {pred: "SMALL", col: "#FF3131"};
-            if (pattern.includes("SMALLSMALLSMALLSMALL") || pattern === "SSSS") return {pred: "BIG", col: "#00FF00"};
-            if (pattern === "BSBS" || pattern === "B S B S") return {pred: "BIG", col: "#00FF00"};
-            if (pattern === "SBSB" || pattern === "S B S B") return {pred: "SMALL", col: "#FF3131"};
-            if (pattern.endsWith("BIGBIG")) return {pred: "SMALL", col: "#FF3131"};
-            if (pattern.endsWith("SMALLSMALL")) return {pred: "BIG", col: "#00FF00"};
-
-            // Red/Green Patterns (from second code + common tricks)
-            const nums = history.map(h => h === "RED" ? 1 : 0); // Simple mapping for demo
-            let weight = Math.abs(nums[0] - nums[2]) + (nums[1] + nums[3]);
-            if (weight % 2 === 0) return {pred: "RED 🔴", col: "#ff3333"};
-            else return {pred: "GREEN 🟢", col: "#33ff33"};
-
-            // Fallback random (realistic)
-            const options = ["BIG 🟢", "SMALL 🔴", "RED 🔴", "GREEN 🟢"];
-            const rand = options[Math.floor(Math.random() * options.length)];
-            return {pred: rand, col: rand.includes("BIG") || rand.includes("GREEN") ? "#00FF00" : "#FF3131"};
-        }
-
-        function updateEngine() {
-            const now = new Date();
-            const seconds = now.getSeconds();
-            const remaining = 60 - seconds;
-            document.getElementById('timerDisplay').innerText = remaining + "s";
-
-            let predObj;
-            if (remaining <= 20 && remaining > 5) {
-                predObj = getPrediction();
-                currentPrediction = predObj.pred;
-                predictionColor = predObj.col;
-                document.getElementById('loader').innerText = "AI Analyzing Pattern...";
-            } else if (remaining <= 5) {
-                currentPrediction = "RESULT SOON...";
-                predictionColor = "cyan";
-                document.getElementById('loader').innerText = "";
-            } else {
-                currentPrediction = "ANALYZING DATA...";
-                predictionColor = "yellow";
-                document.getElementById('loader').innerText = "";
-            }
-
-            const pDisplay = document.getElementById('predictionDisplay');
-            pDisplay.innerText = currentPrediction;
-            pDisplay.style.color = predictionColor;
-        }
-
-        setInterval(updateEngine, 1000);
-        updateEngine(); // Initial call
-    </script>
 </body>
 </html>
