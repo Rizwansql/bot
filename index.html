@@ -3,119 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo Live Signal - MOD BY SQL</title>
+    <title>Wingo Predictor - Open in Floating Window</title>
     <style>
-        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        #floatingPanel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 350px;
-            background: linear-gradient(#111, #000);
-            border: 3px solid #00ff00;
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-            color: #fff;
-            z-index: 9999;
-            text-align: center;
-        }
-        .header { font-size: 16px; color: #ff0000; font-weight: bold; text-shadow: 0 0 10px #ff0000; }
-        .mod { font-size: 12px; color: #00ffea; margin-bottom: 10px; }
-        .timer { font-size: 40px; color: #ffd700; font-weight: bold; }
-        .predict { font-size: 50px; font-weight: 900; min-height: 70px; margin: 15px 0; }
-        .history { font-size: 14px; color: #aaa; margin: 10px 0; max-height: 80px; overflow-y: auto; }
-        .btn-group { display: flex; justify-content: center; gap: 10px; }
-        .btn { padding: 12px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        .btn-big { background: #00ff00; color: #000; }
-        .btn-small { background: #ff3131; color: #fff; }
-        .close-btn { position: absolute; top: 5px; right: 10px; background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
+        body { background: #000; color: #fff; text-align: center; padding: 50px; font-family: Arial, sans-serif; }
+        h1 { color: #00ff00; }
+        button { padding: 20px 40px; font-size: 24px; background: #ff0000; color: #fff; border: none; border-radius: 15px; cursor: pointer; }
+        .info { margin: 30px; font-size: 18px; color: #00ffea; }
     </style>
 </head>
 <body>
+    <h1>WINGO LIVE SIGNAL PRO</h1>
+    <p class="info">MOD BY SQL</p>
+    <button id="openPip">OPEN IN FLOATING WINDOW</button>
+    <p class="info">क्लिक करो – प्रेडिक्टर अलग फ्लोटिंग विंडो में खुलेगा!<br>वो हमेशा ऊपर रहेगा, कितने भी टैब स्विच करो!</p>
 
-<div id="floatingPanel">
-    <button class="close-btn" onclick="document.getElementById('floatingPanel').style.display='none'">×</button>
-    <div class="header">WINGO LIVE SIGNAL PRO</div>
-    <div class="mod">MOD BY SQL</div>
-    
-    <div class="timer" id="timer">60s</div>
-    
-    <div class="predict" id="predict">WAIT</div>
-    
-    <div class="history" id="history">History: None</div>
-    
-    <div style="font-size:12px;margin:10px 0;">Add Latest Result:</div>
-    <div class="btn-group">
-        <button class="btn btn-big" onclick="addResult('BIG')">BIG</button>
-        <button class="btn btn-small" onclick="addResult('SMALL')">SMALL</button>
+    <!-- Predictor Content (Hidden, will move to PiP) -->
+    <div id="predictorContent" style="display:none;">
+        <style>
+            body { margin:0; background: linear-gradient(#000,#111); color:#fff; text-align:center; padding:10px; }
+            .header { background:#ff0000; padding:10px; font-size:18px; font-weight:bold; border-radius:10px; }
+            .mod { font-size:16px; color:#00ffea; font-weight:bold; margin:10px 0; }
+            .timer { font-size:40px; color:#ffd700; font-weight:bold; }
+            .predict { font-size:55px; font-weight:900; min-height:70px; margin:15px 0; }
+            .history { font-size:14px; color:#aaa; max-height:100px; overflow-y:auto; background:#000; padding:8px; border-radius:8px; margin:15px 0; }
+            .btn-group { display:flex; justify-content:center; gap:15px; }
+            .btn { padding:15px 25px; border:none; border-radius:12px; font-weight:bold; font-size:18px; cursor:pointer; flex:1; }
+            .btn-big { background:#00ff00; color:#000; }
+            .btn-small { background:#ff3131; color:#fff; }
+        </style>
+
+        <div class="header">WINGO LIVE SIGNAL PRO</div>
+        <div class="mod">MOD BY SQL</div>
+        <div class="timer" id="timer">60s</div>
+        <div class="predict" id="predict">WAIT</div>
+        <div class="history" id="history">History: None</div>
+        <div style="font-size:14px;margin:15px 0;">Add Latest Result:</div>
+        <div class="btn-group">
+            <button class="btn btn-big" onclick="addResult('BIG')">BIG</button>
+            <button class="btn btn-small" onclick="addResult('SMALL')">SMALL</button>
+        </div>
     </div>
-</div>
 
-<script>
-    let history = []; // Latest on right
+    <script>
+        const openPipBtn = document.getElementById('openPip');
+        const content = document.getElementById('predictorContent');
 
-    function addResult(res) {
-        history.push(res);
-        if (history.length > 20) history.shift();
-        document.getElementById('history').innerText = "History: " + history.join(" → ");
-    }
+        openPipBtn.addEventListener('click', async () => {
+            if (!('documentPictureInPicture' in window)) {
+                alert('सॉरी भाई, तुम्हारा ब्राउजर Document PiP सपोर्ट नहीं करता। लेटेस्ट Chrome यूज करो!');
+                return;
+            }
 
-    function getPrediction() {
-        if (history.length < 4) return {text: "NEED 4+ RESULTS", color: "orange"};
+            try {
+                const pipWindow = await documentPictureInPicture.requestWindow({
+                    width: 350,
+                    height: 600
+                });
 
-        let last4 = history.slice(-4).join("");
-        let last3 = history.slice(-3).join("");
-        let last2 = history.slice(-2).join("");
+                // Copy styles
+                const styles = [...document.styleSheets].map(sheet => {
+                    try {
+                        return [...sheet.cssRules].map(rule => rule.cssText).join('');
+                    } catch (e) { return ''; }
+                }).join('');
 
-        // Enhanced Patterns (15+ rules)
-        if (last4.includes("BIGBIGBIGBIG")) return {text: "SMALL", color: "#ff3131"};
-        if (last4.includes("SMALLSMALLSMALLSMALL")) return {text: "BIG", color: "#00ff00"};
-        if (last3 === "BIGBIGBIG" || last3 === "SMALLSMALLSMALL") return {text: last3.includes("BIG") ? "SMALL" : "BIG", color: last3.includes("BIG") ? "#ff3131" : "#00ff00"};
-        if (last2 === "BIGBIG" || last2 === "SMALLSMALL") return {text: last2.includes("BIG") ? "SMALL" : "BIG", color: last2.includes("BIG") ? "#ff3131" : "#00ff00"};
-        if (last4 === "BIGSMALLBIGSMALL" || last4 === "SMALLBIGSMALLBIG") return {text: history[history.length-1] === "BIG" ? "SMALL" : "BIG", color: history[history.length-1] === "BIG" ? "#ff3131" : "#00ff00"};
+                const styleEl = pipWindow.document.createElement('style');
+                styleEl.textContent = styles + content.querySelector('style').textContent;
+                pipWindow.document.head.appendChild(styleEl);
 
-        // More patterns
-        let bigCount = history.slice(-6).filter(x => x === "BIG").length;
-        let smallCount = 6 - bigCount;
-        if (bigCount >= 5) return {text: "SMALL", color: "#ff3131"};
-        if (smallCount >= 5) return {text: "BIG", color: "#00ff00"};
+                // Move content to PiP
+                pipWindow.document.body.appendChild(content);
+                content.style.display = 'block';
 
-        // Intelligent fallback (not pure random)
-        let recentTrend = history.slice(-3);
-        if (recentTrend[0] === recentTrend[1] && recentTrend[1] === recentTrend[2]) {
-            return {text: recentTrend[0] === "BIG" ? "SMALL" : "BIG", color: recentTrend[0] === "BIG" ? "#ff3131" : "#00ff00"};
-        }
+                // Copy scripts/variables to PiP window
+                const script = pipWindow.document.createElement('script');
+                script.textContent = `
+                    let history = [];
+                    function addResult(res) {
+                        history.push(res);
+                        if (history.length > 30) history.shift();
+                        document.getElementById('history').innerText = "History: " + history.join(" → ");
+                    }
+                    function getPrediction() {
+                        if (history.length < 4) return {text: "NEED 4+", color: "orange"};
+                        let last = history.slice(-4);
+                        let str = last.join("");
+                        if (str.match(/BIG.*BIG.*BIG.*BIG/)) return {text: "SMALL", color: "#ff3131"};
+                        if (str.match(/SMALL.*SMALL.*SMALL.*SMALL/)) return {text: "BIG", color: "#00ff00"};
+                        if (last.slice(-3).every(x => x === "BIG")) return {text: "SMALL", color: "#ff3131"};
+                        if (last.slice(-3).every(x => x === "SMALL")) return {text: "BIG", color: "#00ff00"};
+                        if (last.slice(-2).every(x => x === "BIG")) return {text: "SMALL", color: "#ff3131"};
+                        if (last.slice(-2).every(x => x === "SMALL")) return {text: "BIG", color: "#00ff00"};
+                        if (last[0] !== last[1] && last[1] !== last[2] && last[2] !== last[3]) {
+                            return {text: last[3] === "BIG" ? "SMALL" : "BIG", color: last[3] === "BIG" ? "#ff3131" : "#00ff00"};
+                        }
+                        let recent6 = history.slice(-6);
+                        let bigCount = recent6.filter(x => x === "BIG").length;
+                        if (bigCount >= 5) return {text: "SMALL", color: "#ff3131"};
+                        if (bigCount <= 1) return {text: "BIG", color: "#00ff00"};
+                        return Math.random() < 0.7 ? 
+                            {text: history[history.length-1], color: history[history.length-1] === "BIG" ? "#00ff00" : "#ff3131"} :
+                            {text: history[history.length-1] === "BIG" ? "SMALL" : "BIG", color: history[history.length-1] === "BIG" ? "#ff3131" : "#00ff00"};
+                    }
+                    function update() {
+                        let now = new Date();
+                        let sec = now.getSeconds();
+                        let remain = 60 - sec;
+                        document.getElementById('timer').innerText = remain + "s";
+                        let predBox = document.getElementById('predict');
+                        if (remain <= 20 && remain > 5) {
+                            let pred = getPrediction();
+                            predBox.innerText = pred.text;
+                            predBox.style.color = pred.color;
+                        } else if (remain <= 5) {
+                            predBox.innerText = "RESULT...";
+                            predBox.style.color = "cyan";
+                        } else {
+                            predBox.innerText = "ANALYZING...";
+                            predBox.style.color = "yellow";
+                        }
+                    }
+                    setInterval(update, 1000);
+                    update();
+                `;
+                pipWindow.document.body.appendChild(script);
 
-        // 60% chance to follow last trend
-        return Math.random() < 0.6 ? 
-            {text: history[history.length-1], color: history[history.length-1] === "BIG" ? "#00ff00" : "#ff3131"} :
-            {text: history[history.length-1] === "BIG" ? "SMALL" : "BIG", color: history[history.length-1] === "BIG" ? "#ff3131" : "#00ff00"};
-    }
+                openPipBtn.disabled = true;
+                openPipBtn.textContent = "Floating Window Open हो गई!";
 
-    function update() {
-        let now = new Date();
-        let sec = now.getSeconds();
-        let remain = 60 - sec;
-        document.getElementById('timer').innerText = remain + "s";
-
-        let predBox = document.getElementById('predict');
-        if (remain <= 20 && remain > 5) {
-            let pred = getPrediction();
-            predBox.innerText = pred.text;
-            predBox.style.color = pred.color;
-        } else if (remain <= 5) {
-            predBox.innerText = "RESULT...";
-            predBox.style.color = "cyan";
-        } else {
-            predBox.innerText = "ANALYZING...";
-            predBox.style.color = "yellow";
-        }
-    }
-
-    setInterval(update, 1000);
-    update();
-</script>
-
+            } catch (e) {
+                alert('Error: ' + e);
+            }
+        });
+    </script>
 </body>
 </html>
