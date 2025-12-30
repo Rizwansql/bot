@@ -25,11 +25,12 @@
         .header {
             background: #ff0000;
             padding: 8px;
-            cursor: move; /* Drag from header */
+            cursor: move;
             font-size: 16px;
             font-weight: bold;
             border-radius: 10px 10px 0 0;
             margin: -10px -10px 10px -10px;
+            position: relative;
         }
         .mod { font-size: 14px; color: #00ffea; font-weight: bold; margin: 5px 0; }
         .timer { font-size: 36px; color: #ffd700; font-weight: bold; margin: 10px 0; }
@@ -102,25 +103,16 @@
 </div>
 
 <script>
-    // Draggable Functionality
+    // Draggable Fix (Main changes here)
     const panel = document.getElementById('floatingPanel');
     const header = document.getElementById('dragHeader');
     let isDragging = false;
-    let currentX;
-    let currentY;
+    let currentX = 0;  // Fixed: Initialize
+    let currentY = 0;  // Fixed: Initialize
     let initialX;
     let initialY;
 
-    header.addEventListener('mousedown', dragStart);
-    header.addEventListener('touchstart', dragStart);
-
-    document.addEventListener('mousemove', dragMove);
-    document.addEventListener('touchmove', dragMove);
-
-    document.addEventListener('mouseup', dragEnd);
-    document.addEventListener('touchend', dragEnd);
-
-    function dragStart(e) {
+    const dragStart = (e) => {
         if (e.type === "touchstart") {
             initialX = e.touches[0].clientX - currentX;
             initialY = e.touches[0].clientY - currentY;
@@ -129,11 +121,11 @@
             initialY = e.clientY - currentY;
         }
         isDragging = true;
-    }
+    };
 
-    function dragMove(e) {
+    const dragMove = (e) => {
         if (isDragging) {
-            e.preventDefault();
+            e.preventDefault(); // Better prevent scroll on mobile
             let x, y;
             if (e.type === "touchmove") {
                 x = e.touches[0].clientX - initialX;
@@ -149,11 +141,20 @@
             panel.style.right = "auto";
             panel.style.bottom = "auto";
         }
-    }
+    };
 
-    function dragEnd() {
+    const dragEnd = () => {
         isDragging = false;
-    }
+    };
+
+    header.addEventListener('mousedown', dragStart);
+    header.addEventListener('touchstart', dragStart, { passive: false });
+
+    document.addEventListener('mousemove', dragMove);
+    document.addEventListener('touchmove', dragMove, { passive: false });
+
+    document.addEventListener('mouseup', dragEnd);
+    document.addEventListener('touchend', dragEnd);
 
     // Minimize toggle
     function toggleMinimize() {
@@ -175,7 +176,6 @@
         let last = history.slice(-4);
         let str = last.join("");
 
-        // Enhanced 20+ Patterns
         if (str.match(/BIG.*BIG.*BIG.*BIG/)) return {text: "SMALL", color: "#ff3131"};
         if (str.match(/SMALL.*SMALL.*SMALL.*SMALL/)) return {text: "BIG", color: "#00ff00"};
         if (last[3] === last[2] && last[2] === last[1] && last[1] === last[0]) return {text: last[0] === "BIG" ? "SMALL" : "BIG", color: last[0] === "BIG" ? "#ff3131" : "#00ff00"};
@@ -184,18 +184,15 @@
         if (last.slice(-2).every(x => x === "BIG")) return {text: "SMALL", color: "#ff3131"};
         if (last.slice(-2).every(x => x === "SMALL")) return {text: "BIG", color: "#00ff00"};
 
-        // Alternating pattern continue
         if (last[0] !== last[1] && last[1] !== last[2] && last[2] !== last[3]) {
             return {text: last[3] === "BIG" ? "SMALL" : "BIG", color: last[3] === "BIG" ? "#ff3131" : "#00ff00"};
         }
 
-        // Count based
         let recent6 = history.slice(-6);
         let bigCount = recent6.filter(x => x === "BIG").length;
         if (bigCount >= 5) return {text: "SMALL", color: "#ff3131"};
         if (bigCount <= 1) return {text: "BIG", color: "#00ff00"};
 
-        // Smart fallback: 70% follow trend
         return Math.random() < 0.7 ? 
             {text: history[history.length-1], color: history[history.length-1] === "BIG" ? "#00ff00" : "#ff3131"} :
             {text: history[history.length-1] === "BIG" ? "SMALL" : "BIG", color: history[history.length-1] === "BIG" ? "#ff3131" : "#00ff00"};
