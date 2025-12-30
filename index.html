@@ -3,138 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo Predictor - Open in Floating Window</title>
+    <title>Wingo Signal - MOD BY SQL</title>
     <style>
-        body { background: #000; color: #fff; text-align: center; padding: 50px; font-family: Arial, sans-serif; }
-        h1 { color: #00ff00; }
-        button { padding: 20px 40px; font-size: 24px; background: #ff0000; color: #fff; border: none; border-radius: 15px; cursor: pointer; }
-        .info { margin: 30px; font-size: 18px; color: #00ffea; }
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; overflow: hidden; }
+        #floatingPanel {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 300px;
+            background: linear-gradient(#000, #111);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
+            color: #fff;
+            z-index: 999999;
+            text-align: center;
+            user-select: none;
+            touch-action: none; /* Better touch dragging */
+        }
+        .header {
+            background: #ff0000;
+            padding: 8px;
+            cursor: move; /* Drag from header */
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+            margin: -10px -10px 10px -10px;
+        }
+        .mod { font-size: 14px; color: #00ffea; font-weight: bold; margin: 5px 0; }
+        .timer { font-size: 36px; color: #ffd700; font-weight: bold; margin: 10px 0; }
+        .predict { font-size: 48px; font-weight: 900; min-height: 60px; margin: 10px 0; }
+        .history {
+            font-size: 13px;
+            color: #aaa;
+            margin: 10px 0;
+            max-height: 70px;
+            overflow-y: auto;
+            background: #000;
+            padding: 5px;
+            border-radius: 8px;
+        }
+        .btn-group { display: flex; justify-content: center; gap: 10px; margin: 10px 0; }
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            flex: 1;
+        }
+        .btn-big { background: #00ff00; color: #000; }
+        .btn-small { background: #ff3131; color: #fff; }
+        .minimize-btn {
+            position: absolute;
+            top: 5px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h1>WINGO LIVE SIGNAL PRO</h1>
-    <p class="info">MOD BY SQL</p>
-    <button id="openPip">OPEN IN FLOATING WINDOW</button>
-    <p class="info">क्लिक करो – प्रेडिक्टर अलग फ्लोटिंग विंडो में खुलेगा!<br>वो हमेशा ऊपर रहेगा, कितने भी टैब स्विच करो!</p>
 
-    <!-- Predictor Content (Hidden, will move to PiP) -->
-    <div id="predictorContent" style="display:none;">
-        <style>
-            body { margin:0; background: linear-gradient(#000,#111); color:#fff; text-align:center; padding:10px; }
-            .header { background:#ff0000; padding:10px; font-size:18px; font-weight:bold; border-radius:10px; }
-            .mod { font-size:16px; color:#00ffea; font-weight:bold; margin:10px 0; }
-            .timer { font-size:40px; color:#ffd700; font-weight:bold; }
-            .predict { font-size:55px; font-weight:900; min-height:70px; margin:15px 0; }
-            .history { font-size:14px; color:#aaa; max-height:100px; overflow-y:auto; background:#000; padding:8px; border-radius:8px; margin:15px 0; }
-            .btn-group { display:flex; justify-content:center; gap:15px; }
-            .btn { padding:15px 25px; border:none; border-radius:12px; font-weight:bold; font-size:18px; cursor:pointer; flex:1; }
-            .btn-big { background:#00ff00; color:#000; }
-            .btn-small { background:#ff3131; color:#fff; }
-        </style>
-
-        <div class="header">WINGO LIVE SIGNAL PRO</div>
-        <div class="mod">MOD BY SQL</div>
-        <div class="timer" id="timer">60s</div>
-        <div class="predict" id="predict">WAIT</div>
-        <div class="history" id="history">History: None</div>
-        <div style="font-size:14px;margin:15px 0;">Add Latest Result:</div>
-        <div class="btn-group">
-            <button class="btn btn-big" onclick="addResult('BIG')">BIG</button>
-            <button class="btn btn-small" onclick="addResult('SMALL')">SMALL</button>
-        </div>
+<div id="floatingPanel">
+    <div class="header" id="dragHeader">
+        WINGO LIVE SIGNAL PRO
+        <button class="minimize-btn" onclick="toggleMinimize()">–</button>
+        <button class="close-btn" onclick="document.getElementById('floatingPanel').style.display='none'">×</button>
     </div>
+    <div class="mod">MOD BY SQL</div>
+    
+    <div class="timer" id="timer">60s</div>
+    
+    <div class="predict" id="predict">WAIT</div>
+    
+    <div class="history" id="history">History: None</div>
+    
+    <div style="font-size:12px;">Add Latest Result:</div>
+    <div class="btn-group">
+        <button class="btn btn-big" onclick="addResult('BIG')">BIG</button>
+        <button class="btn btn-small" onclick="addResult('SMALL')">SMALL</button>
+    </div>
+</div>
 
-    <script>
-        const openPipBtn = document.getElementById('openPip');
-        const content = document.getElementById('predictorContent');
+<script>
+    // Draggable Functionality
+    const panel = document.getElementById('floatingPanel');
+    const header = document.getElementById('dragHeader');
+    let isDragging = false;
+    let currentX;
+    let currentY;
+    let initialX;
+    let initialY;
 
-        openPipBtn.addEventListener('click', async () => {
-            if (!('documentPictureInPicture' in window)) {
-                alert('सॉरी भाई, तुम्हारा ब्राउजर Document PiP सपोर्ट नहीं करता। लेटेस्ट Chrome यूज करो!');
-                return;
+    header.addEventListener('mousedown', dragStart);
+    header.addEventListener('touchstart', dragStart);
+
+    document.addEventListener('mousemove', dragMove);
+    document.addEventListener('touchmove', dragMove);
+
+    document.addEventListener('mouseup', dragEnd);
+    document.addEventListener('touchend', dragEnd);
+
+    function dragStart(e) {
+        if (e.type === "touchstart") {
+            initialX = e.touches[0].clientX - currentX;
+            initialY = e.touches[0].clientY - currentY;
+        } else {
+            initialX = e.clientX - currentX;
+            initialY = e.clientY - currentY;
+        }
+        isDragging = true;
+    }
+
+    function dragMove(e) {
+        if (isDragging) {
+            e.preventDefault();
+            let x, y;
+            if (e.type === "touchmove") {
+                x = e.touches[0].clientX - initialX;
+                y = e.touches[0].clientY - initialY;
+            } else {
+                x = e.clientX - initialX;
+                y = e.clientY - initialY;
             }
+            currentX = x;
+            currentY = y;
+            panel.style.left = x + "px";
+            panel.style.top = y + "px";
+            panel.style.right = "auto";
+            panel.style.bottom = "auto";
+        }
+    }
 
-            try {
-                const pipWindow = await documentPictureInPicture.requestWindow({
-                    width: 350,
-                    height: 600
-                });
+    function dragEnd() {
+        isDragging = false;
+    }
 
-                // Copy styles
-                const styles = [...document.styleSheets].map(sheet => {
-                    try {
-                        return [...sheet.cssRules].map(rule => rule.cssText).join('');
-                    } catch (e) { return ''; }
-                }).join('');
+    // Minimize toggle
+    function toggleMinimize() {
+        const content = panel.querySelectorAll(':not(.header):not(.minimize-btn):not(.close-btn)');
+        content.forEach(el => el.style.display = el.style.display === 'none' ? '' : 'none');
+    }
 
-                const styleEl = pipWindow.document.createElement('style');
-                styleEl.textContent = styles + content.querySelector('style').textContent;
-                pipWindow.document.head.appendChild(styleEl);
+    let history = [];
 
-                // Move content to PiP
-                pipWindow.document.body.appendChild(content);
-                content.style.display = 'block';
+    function addResult(res) {
+        history.push(res);
+        if (history.length > 30) history.shift();
+        document.getElementById('history').innerText = "History: " + history.join(" → ");
+    }
 
-                // Copy scripts/variables to PiP window
-                const script = pipWindow.document.createElement('script');
-                script.textContent = `
-                    let history = [];
-                    function addResult(res) {
-                        history.push(res);
-                        if (history.length > 30) history.shift();
-                        document.getElementById('history').innerText = "History: " + history.join(" → ");
-                    }
-                    function getPrediction() {
-                        if (history.length < 4) return {text: "NEED 4+", color: "orange"};
-                        let last = history.slice(-4);
-                        let str = last.join("");
-                        if (str.match(/BIG.*BIG.*BIG.*BIG/)) return {text: "SMALL", color: "#ff3131"};
-                        if (str.match(/SMALL.*SMALL.*SMALL.*SMALL/)) return {text: "BIG", color: "#00ff00"};
-                        if (last.slice(-3).every(x => x === "BIG")) return {text: "SMALL", color: "#ff3131"};
-                        if (last.slice(-3).every(x => x === "SMALL")) return {text: "BIG", color: "#00ff00"};
-                        if (last.slice(-2).every(x => x === "BIG")) return {text: "SMALL", color: "#ff3131"};
-                        if (last.slice(-2).every(x => x === "SMALL")) return {text: "BIG", color: "#00ff00"};
-                        if (last[0] !== last[1] && last[1] !== last[2] && last[2] !== last[3]) {
-                            return {text: last[3] === "BIG" ? "SMALL" : "BIG", color: last[3] === "BIG" ? "#ff3131" : "#00ff00"};
-                        }
-                        let recent6 = history.slice(-6);
-                        let bigCount = recent6.filter(x => x === "BIG").length;
-                        if (bigCount >= 5) return {text: "SMALL", color: "#ff3131"};
-                        if (bigCount <= 1) return {text: "BIG", color: "#00ff00"};
-                        return Math.random() < 0.7 ? 
-                            {text: history[history.length-1], color: history[history.length-1] === "BIG" ? "#00ff00" : "#ff3131"} :
-                            {text: history[history.length-1] === "BIG" ? "SMALL" : "BIG", color: history[history.length-1] === "BIG" ? "#ff3131" : "#00ff00"};
-                    }
-                    function update() {
-                        let now = new Date();
-                        let sec = now.getSeconds();
-                        let remain = 60 - sec;
-                        document.getElementById('timer').innerText = remain + "s";
-                        let predBox = document.getElementById('predict');
-                        if (remain <= 20 && remain > 5) {
-                            let pred = getPrediction();
-                            predBox.innerText = pred.text;
-                            predBox.style.color = pred.color;
-                        } else if (remain <= 5) {
-                            predBox.innerText = "RESULT...";
-                            predBox.style.color = "cyan";
-                        } else {
-                            predBox.innerText = "ANALYZING...";
-                            predBox.style.color = "yellow";
-                        }
-                    }
-                    setInterval(update, 1000);
-                    update();
-                `;
-                pipWindow.document.body.appendChild(script);
+    function getPrediction() {
+        if (history.length < 4) return {text: "NEED 4+", color: "orange"};
 
-                openPipBtn.disabled = true;
-                openPipBtn.textContent = "Floating Window Open हो गई!";
+        let last = history.slice(-4);
+        let str = last.join("");
 
-            } catch (e) {
-                alert('Error: ' + e);
-            }
-        });
-    </script>
+        // Enhanced 20+ Patterns
+        if (str.match(/BIG.*BIG.*BIG.*BIG/)) return {text: "SMALL", color: "#ff3131"};
+        if (str.match(/SMALL.*SMALL.*SMALL.*SMALL/)) return {text: "BIG", color: "#00ff00"};
+        if (last[3] === last[2] && last[2] === last[1] && last[1] === last[0]) return {text: last[0] === "BIG" ? "SMALL" : "BIG", color: last[0] === "BIG" ? "#ff3131" : "#00ff00"};
+        if (last.slice(-3).every(x => x === "BIG")) return {text: "SMALL", color: "#ff3131"};
+        if (last.slice(-3).every(x => x === "SMALL")) return {text: "BIG", color: "#00ff00"};
+        if (last.slice(-2).every(x => x === "BIG")) return {text: "SMALL", color: "#ff3131"};
+        if (last.slice(-2).every(x => x === "SMALL")) return {text: "BIG", color: "#00ff00"};
+
+        // Alternating pattern continue
+        if (last[0] !== last[1] && last[1] !== last[2] && last[2] !== last[3]) {
+            return {text: last[3] === "BIG" ? "SMALL" : "BIG", color: last[3] === "BIG" ? "#ff3131" : "#00ff00"};
+        }
+
+        // Count based
+        let recent6 = history.slice(-6);
+        let bigCount = recent6.filter(x => x === "BIG").length;
+        if (bigCount >= 5) return {text: "SMALL", color: "#ff3131"};
+        if (bigCount <= 1) return {text: "BIG", color: "#00ff00"};
+
+        // Smart fallback: 70% follow trend
+        return Math.random() < 0.7 ? 
+            {text: history[history.length-1], color: history[history.length-1] === "BIG" ? "#00ff00" : "#ff3131"} :
+            {text: history[history.length-1] === "BIG" ? "SMALL" : "BIG", color: history[history.length-1] === "BIG" ? "#ff3131" : "#00ff00"};
+    }
+
+    function update() {
+        let now = new Date();
+        let sec = now.getSeconds();
+        let remain = 60 - sec;
+        document.getElementById('timer').innerText = remain + "s";
+
+        let predBox = document.getElementById('predict');
+        if (remain <= 20 && remain > 5) {
+            let pred = getPrediction();
+            predBox.innerText = pred.text;
+            predBox.style.color = pred.color;
+        } else if (remain <= 5) {
+            predBox.innerText = "RESULT...";
+            predBox.style.color = "cyan";
+        } else {
+            predBox.innerText = "ANALYZING...";
+            predBox.style.color = "yellow";
+        }
+    }
+
+    setInterval(update, 1000);
+    update();
+</script>
+
 </body>
 </html>
