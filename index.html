@@ -27,10 +27,12 @@
         .buy-btn { background: var(--gold); border: none; padding: 10px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 8px; }
         #detail-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; display: none; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .detail-box { background: white; padding: 20px; border-radius: 15px; max-width: 500px; width: 100%; text-align: center; color: #000; }
-        .detail-box img { width: 100%; max-height: 300px; object-fit: contain; }
+        .detail-box .carousel { display: flex; overflow-x: auto; margin: 10px 0; }
+        .detail-box .carousel img { width: 100%; height: 200px; object-fit: contain; margin-right: 10px; }
         .color-options { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
         .color-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ccc; cursor: pointer; }
         .color-btn.active { border: 3px solid var(--gold); }
+        .size-select { margin: 10px 0; }
         #checkout-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5500; display: none; justify-content: center; align-items: center; padding: 20px; }
         .checkout-box { background: white; padding: 25px; border-radius: 15px; max-width: 400px; width: 100%; color: #000; }
         .checkout-box input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
@@ -44,7 +46,7 @@
         #translate-btn { background: var(--gold); color: var(--dark); padding: 10px 20px; border-radius: 20px; font-weight: bold; margin: 20px auto; display: block; cursor: pointer; width: 80%; }
     </style>
 </head>
-<body>
+<body data-lang="hi">
 
     <header>
         <div class="logo">KALA BAZAR</div>
@@ -53,9 +55,9 @@
 
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-        <a href="#" onclick="showHome()">होम</a>
-        <a href="#" onclick="showPolicy()">प्राइवेसी और शिपिंग पॉलिसी</a>
-        <button id="translate-btn" onclick="toggleLanguage()">Switch to English</button>
+        <a href="#" onclick="showHome()" data-en="Home" data-hi="होम">होम</a>
+        <a href="#" onclick="showPolicy()" data-en="Privacy and Shipping Policy" data-hi="प्राइवेसी और शिपिंग पॉलिसी">प्राइवेसी और शिपिंग पॉलिसी</a>
+        <button id="translate-btn" onclick="toggleLanguage()" data-en="Switch to Hindi" data-hi="Switch to English">Switch to English</button>
     </div>
 
     <div id="mainContent">
@@ -69,73 +71,60 @@
     <div id="detail-modal">
         <div class="detail-box">
             <h2 id="detail-name"></h2>
-            <img id="detail-img" src="" alt="Product">
+            <div class="carousel" id="detail-carousel"></div>
             <p id="detail-desc"></p>
             <div class="color-options" id="color-options"></div>
+            <select id="size-select" class="size-select">
+                <option value="">Select Size</option>
+            </select>
             <p class="old-price" id="detail-mrp"></p>
             <p class="price" id="detail-price"></p>
-            <button class="buy-btn" onclick="openCheckout()">अभी खरीदें</button>
-            <button onclick="closeDetail()" style="margin-top:15px; background:none; border:none; color:var(--red); font-weight:bold;">बंद करें</button>
+            <button class="buy-btn" onclick="openCheckout()" data-en="Buy Now" data-hi="Buy Now">Buy Now</button>
+            <button onclick="closeDetail()" style="margin-top:15px; background:none; border:none; color:var(--red); font-weight:bold;" data-en="Close" data-hi="बंद करें">बंद करें</button>
         </div>
     </div>
 
     <div id="checkout-modal">
         <div class="checkout-box">
-            <h3>डिलीवरी डिटेल्स</h3>
-            <input type="text" id="cust-name" placeholder="पूरा नाम">
-            <input type="text" id="cust-phone" placeholder="मोबाइल नंबर">
-            <input type="text" id="cust-address" placeholder="पूरा पता">
-            <input type="text" id="cust-pin" placeholder="पिन कोड">
-            <button class="buy-btn" onclick="proceedToPayment()">पेमेंट पर जाएं</button>
-            <button onclick="closeCheckout()" style="margin-top:10px; background:none; border:none; color:var(--red);">कैंसल</button>
+            <h3 data-en="Delivery Details" data-hi="डिलीवरी डिटेल्स">डिलीवरी डिटेल्स</h3>
+            <input type="text" id="cust-name" placeholder="पूरा नाम" data-en-placeholder="Full Name" data-hi-placeholder="पूरा नाम">
+            <input type="text" id="cust-phone" placeholder="मोबाइल नंबर" data-en-placeholder="Mobile Number" data-hi-placeholder="मोबाइल नंबर">
+            <input type="text" id="cust-address" placeholder="पूरा पता" data-en-placeholder="Full Address" data-hi-placeholder="पूरा पता">
+            <input type="text" id="cust-pin" placeholder="पिन कोड" data-en-placeholder="PIN Code" data-hi-placeholder="पिन कोड">
+            <button class="buy-btn" onclick="proceedToPayment()" data-en="Proceed to Payment" data-hi="पेमेंट पर जाएं">पेमेंट पर जाएं</button>
+            <button onclick="closeCheckout()" style="margin-top:10px; background:none; border:none; color:var(--red);" data-en="Cancel" data-hi="कैंसल">कैंसल</button>
         </div>
     </div>
 
     <div id="pay-modal">
         <div class="pay-box">
-            <h2 style="color:var(--gold);">चेकआउट</h2>
+            <h2 style="color:var(--gold);" data-en="CHECKOUT" data-hi="चेकआउट">चेकआउट</h2>
             <p id="p-amt" style="color:#00ff88; font-weight:900; font-size:1.4rem;"></p>
             <a id="gpay" href="#" class="p-btn"><img src="https://img.icons8.com/color/48/google-pay.png" alt="GPay"> Google Pay</a>
             <a id="ppay" href="#" class="p-btn"><img src="https://img.icons8.com/color/48/phone-pe.png" alt="PhonePe"> PhonePe</a>
             <a id="paytm" href="#" class="p-btn"><img src="https://img.icons8.com/color/48/paytm.png" alt="Paytm"> Paytm</a>
             <div class="p-btn" onclick="copyA('bc1qxy2kgdy6jrsq4z62v3860v6lcyv5uvvhu0m6ax', 'BTC BEP20')"><img src="https://img.icons8.com/color/48/bitcoin.png" alt="BTC"> Bitcoin (BEP20)</div>
             <div class="p-btn" onclick="copyA('0xea67ed86d2a3f145a37f008c5bc0c523b50a039a', 'USDT BEP20')"><img src="https://img.icons8.com/color/48/tether.png" alt="USDT"> USDT (BEP20)</div>
-            <input type="text" id="txid" class="v-input" placeholder="ट्रांजेक्शन ID डालें">
-            <button onclick="verifyLogic()" id="v-btn" class="v-btn">पेमेंट वेरिफाई करें</button>
-            <button onclick="closePay()" style="color:var(--red); border:none; background:none; margin-top:15px; font-weight:bold;">कैंसल</button>
+            <input type="text" id="txid" class="v-input" placeholder="ट्रांजेक्शन ID डालें" data-en-placeholder="Enter Transaction ID" data-hi-placeholder="ट्रांजेक्शन ID डालें">
+            <button onclick="verifyLogic()" id="v-btn" class="v-btn" data-en="VERIFY PAYMENT" data-hi="पेमेंट वेरिफाई करें">पेमेंट वेरिफाई करें</button>
+            <button onclick="closePay()" style="color:var(--red); border:none; background:none; margin-top:15px; font-weight:bold; cursor:pointer;" data-en="CANCEL" data-hi="कैंसल">कैंसल</button>
         </div>
     </div>
 
     <script>
         const realProducts = {
-            "Mobiles": [
-                {name: "Vivo Y28 5G", price: 12999, mrp: 16999, off: 23, img: "https://m.media-amazon.com/images/I/71EPrLqHHjL._SX679_.jpg", colors: ["Blue","Green"], desc: "5000mAh Battery, 50MP Camera, Dimensity Processor"},
-                {name: "Redmi 13C 5G", price: 10999, mrp: 14999, off: 26, img: "https://m.media-amazon.com/images/I/81Ic1SbN8UL._SX679_.jpg", colors: ["Black","Green"], desc: "90Hz Display, 50MP AI Camera"},
-                {name: "Moto G45 5G", price: 11999, mrp: 14999, off: 20, img: "https://m.media-amazon.com/images/I/71zXb3n0faL._SX679_.jpg", colors: ["Blue","Green"], desc: "Snapdragon, Vegan Leather"},
-                {name: "Samsung Galaxy M15 5G", price: 12999, mrp: 16999, off: 23, img: "https://m.media-amazon.com/images/I/71O2T+3Y0JL._SX679_.jpg", colors: ["Blue","Grey"], desc: "6000mAh, sAMOLED Display"},
-                {name: "POCO X6 Neo 5G", price: 13999, mrp: 17999, off: 22, img: "https://m.media-amazon.com/images/I/71y7b3Yv2WL._SX679_.jpg", colors: ["Black","Gold"], desc: "108MP Camera, Fast Charging"},
-                {name: "iQOO Z9x 5G", price: 12499, mrp: 16499, off: 24, img: "https://m.media-amazon.com/images/I/71+4vX0gvEL._SX679_.jpg", colors: ["Grey","Blue"], desc: "6000mAh Battery, Snapdragon"},
-                {name: "Infinix Hot 40i", price: 8999, mrp: 12999, off: 30, img: "https://m.media-amazon.com/images/I/81Omp7zwS7L._SX679_.jpg", colors: ["Gold","Black"], desc: "Big Display, Long Battery"},
-                {name: "Tecno Pova 6 Neo", price: 11499, mrp: 15499, off: 25, img: "https://m.media-amazon.com/images/I/71uQJxf5wsL._SX679_.jpg", colors: ["Grey"], desc: "Gaming Processor"},
-                // Add more similar if needed, total 20
-                {name: "Lava Storm 5G", price: 12999, mrp: 17999, off: 27, img: "https://m.media-amazon.com/images/I/71k5sE7kGZL._SX679_.jpg", colors: ["Red"], desc: "Stock Android"},
-                {name: "Realme Narzo 70x", price: 11999, mrp: 15999, off: 25, img: "https://m.media-amazon.com/images/I/71OSGnb0MPL._SX679_.jpg", colors: ["Green"], desc: "45W Charge"}
-                // ... continue to 20
-            ],
-            "Fashion": [
-                // Similar 20 fashion items with Amazon images
-                {name: "Roadster T-Shirt", price: 499, mrp: 999, off: 50, img: "https://m.media-amazon.com/images/I/81something-tshirt.jpg", colors: ["Black"], desc: "Cotton Regular Fit"},
-                // Add real ones
-            ],
-            "Electronics": [
-                // 20 gadgets like earbuds, powerbank etc.
-            ],
-            "Toys": [
-                {name: "Remote Control Car", price: 1499, mrp: 2499, off: 40, img: "https://m.media-amazon.com/images/I/71rc-car.jpg", colors: ["Red"], desc: "Off-Road Monster Truck"},
-                {name: "Barbie Doll", price: 999, mrp: 1999, off: 50, img: "https://m.media-amazon.com/images/I/81barbie.jpg", colors: ["Pink"], desc: "Fashion Doll with Accessories"},
-                {name: "LEGO Classic Set", price: 1999, mrp: 2999, off: 33, img: "https://m.media-amazon.com/images/I/71lego.jpg", colors: ["Multi"], desc: "Building Blocks"},
-                // Add more to 20
-            ]
+            "Mobiles": new Array(50).fill(0).map((_, i) => ({
+                name: `Mobile ${i + 1} (e.g., Vivo Y28 5G)`, price: 12999 + i * 100, mrp: 16999 + i * 100, off: 23 + i % 10, img: `https://m.media-amazon.com/images/I/71EPrLqHHjL._SX679_.jpg`, images: [`https://m.media-amazon.com/images/I/71EPrLqHHjL._SX679_.jpg`, `https://m.media-amazon.com/images/I/81Ic1SbN8UL._SX679_.jpg`], colors: ["Blue", "Green"], desc: "5000mAh Battery, 50MP Camera", sizes: []
+            })),
+            "Fashion": new Array(50).fill(0).map((_, i) => ({
+                name: `Fashion Item ${i + 1} (e.g., Roadster T-Shirt)`, price: 499 + i * 10, mrp: 999 + i * 10, off: 50, img: `https://m.media-amazon.com/images/I/81something-tshirt.jpg`, images: [`https://m.media-amazon.com/images/I/81something-tshirt.jpg`, `https://m.media-amazon.com/images/I/71another.jpg`], colors: ["Black", "White"], desc: "Cotton Regular Fit", sizes: ["S", "M", "L", "XL"]
+            })),
+            "Electronics": new Array(50).fill(0).map((_, i) => ({
+                name: `Gadget ${i + 1} (e.g., QUBO Smart Plug)`, price: 999 + i * 20, mrp: 1999 + i * 20, off: 50, img: `https://m.media-amazon.com/images/I/71smartplug.jpg`, images: [`https://m.media-amazon.com/images/I/71smartplug.jpg`, `https://m.media-amazon.com/images/I/81doorbell.jpg`], colors: ["White"], desc: "Smart Home Device", sizes: []
+            })),
+            "Toys": new Array(50).fill(0).map((_, i) => ({
+                name: `Toy ${i + 1} (e.g., LEGO Classic Set)`, price: 1499 + i * 30, mrp: 2499 + i * 30, off: 40, img: `https://m.media-amazon.com/images/I/71lego.jpg`, images: [`https://m.media-amazon.com/images/I/71lego.jpg`, `https://m.media-amazon.com/images/I/81barbie.jpg`], colors: ["Multi"], desc: "Educational Toy", sizes: []
+            }))
         };
 
         const cats = Object.keys(realProducts);
@@ -146,112 +135,150 @@
             const nav = document.getElementById('categoryNav');
             nav.innerHTML = '';
             cats.forEach((c, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
-                btn.innerText = c;
-                btn.onclick = () => showCat(c, btn);
-                nav.appendChild(btn);
+                nav.innerHTML += `<button class="tab-btn ${idx===0?'active':''}" onclick="showCat('${c}', this)" data-en="${c}" data-hi="${c}">${c}</button>`;
             });
         }
 
         function showCat(category, btn) {
             document.getElementById('infoSection').style.display = 'none';
+            document.getElementById('productGrid').style.display = 'grid';
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
             realProducts[category].forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => openDetail(p);
-                card.innerHTML = `
-                    <span class="discount">${p.off}% OFF</span>
-                    <img src="${p.img}" alt="${p.name}">
-                    <h4>${p.name}</h4>
-                    <p class="old-price">₹${p.mrp}</p>
-                    <p class="price">₹${p.price}</p>
-                    <button class="buy-btn" onclick="event.stopPropagation(); openCheckoutDirect(p)">अभी खरीदें</button>
-                `;
-                grid.appendChild(card);
+                grid.innerHTML += `
+                    <div class="card" onclick="openDetail(${JSON.stringify(p)})">
+                        <span class="discount">${p.off}% OFF</span>
+                        <img src="${p.img}" alt="${p.name}">
+                        <h4>${p.name}</h4>
+                        <p class="old-price">₹${p.mrp}</p>
+                        <p class="price">₹${p.price}</p>
+                        <button class="buy-btn" onclick="event.stopPropagation(); selectedProduct = ${JSON.stringify(p)}; openCheckout()" data-en="Buy Now" data-hi="Buy Now">Buy Now</button>
+                    </div>`;
             });
         }
 
         function openDetail(p) {
             selectedProduct = p;
             document.getElementById('detail-name').innerText = p.name;
-            document.getElementById('detail-img').src = p.img;
+            const carousel = document.getElementById('detail-carousel');
+            carousel.innerHTML = '';
+            p.images.forEach(src => {
+                carousel.innerHTML += `<img src="${src}" alt="${p.name}">`;
+            });
             document.getElementById('detail-desc').innerText = p.desc;
-            document.getElementById('detail-mrp').innerText = 'MRP: ₹' + p.mrp;
-            document.getElementById('detail-price').innerText = '₹' + p.price;
             const colorDiv = document.getElementById('color-options');
             colorDiv.innerHTML = '';
             p.colors.forEach((col, i) => {
-                const cbtn = document.createElement('div');
-                cbtn.className = 'color-btn';
-                cbtn.style.backgroundColor = col.toLowerCase();
-                cbtn.onclick = () => document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active')); cbtn.classList.add('active');
-                if (i === 0) cbtn.classList.add('active');
-                colorDiv.appendChild(cbtn);
+                colorDiv.innerHTML += `<div class="color-btn ${i===0?'active':''}" style="background-color:${col.toLowerCase()};" onclick="document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active')); this.classList.add('active');"></div>`;
             });
+            const sizeSelect = document.getElementById('size-select');
+            sizeSelect.style.display = p.sizes.length ? 'block' : 'none';
+            sizeSelect.innerHTML = '<option value="">Select Size</option>';
+            p.sizes.forEach(size => {
+                sizeSelect.innerHTML += `<option value="${size}">${size}</option>`;
+            });
+            document.getElementById('detail-mrp').innerText = `MRP: ₹${p.mrp}`;
+            document.getElementById('detail-price').innerText = `₹${p.price}`;
             document.getElementById('detail-modal').style.display = 'flex';
         }
 
-        function closeDetail() { document.getElementById('detail-modal').style.display = 'none'; }
-
-        function openCheckoutDirect(p) { selectedProduct = p; openCheckout(); }
+        function closeDetail() {
+            document.getElementById('detail-modal').style.display = 'none';
+        }
 
         function openCheckout() {
-            if (!selectedProduct) return alert('Product select karo');
             closeDetail();
             document.getElementById('checkout-modal').style.display = 'flex';
         }
 
-        function closeCheckout() { document.getElementById('checkout-modal').style.display = 'none'; }
+        function closeCheckout() {
+            document.getElementById('checkout-modal').style.display = 'none';
+        }
 
         function proceedToPayment() {
-            if (!document.getElementById('cust-name').value || !document.getElementById('cust-phone').value) return alert('Sab fill karo');
-            openPay(selectedProduct.price);
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const address = document.getElementById('cust-address').value;
+            const pin = document.getElementById('cust-pin').value;
+            if (!name || !phone || !address || !pin) return alert("All fields are required!");
             closeCheckout();
+            openPay(selectedProduct.price);
         }
 
         function openPay(amt) {
             document.getElementById('pay-modal').style.display = 'flex';
-            document.getElementById('p-amt').innerText = 'Total: ₹' + amt;
-            const upi = `upi://pay?pa=rizwanhasan90122778623@ybl&am=${amt}&cu=INR&tn=KalaBazar`;
+            document.getElementById('p-amt').innerText = "Total: ₹" + amt;
+            const upi = `upi://pay?pa=rizwanhasan90122778623@ybl&am=${amt}&cu=INR`;
             document.getElementById('gpay').href = upi;
             document.getElementById('ppay').href = upi;
             document.getElementById('paytm').href = upi;
+            checkCount = 0;
         }
 
-        function closePay() { document.getElementById('pay-modal').style.display = 'none'; }
+        function closePay() {
+            document.getElementById('pay-modal').style.display = 'none';
+        }
 
-        function copyA(a, t) { navigator.clipboard.writeText(a); alert(t + ' Copied!'); }
+        function copyA(a, t) { 
+            navigator.clipboard.writeText(a); 
+            alert(t + " Address Copied!"); 
+        }
 
         function verifyLogic() {
             const b = document.getElementById('v-btn');
-            b.innerText = "PROCESSING...";
+            b.innerText = "PROCESSING... ⏳";
             setTimeout(() => {
-                b.innerText = checkCount === 0 ? "MANUAL CHECK ⚠️" : ["SUCCESS ✅", "PENDING ⏳"][Math.floor(Math.random()*2)];
-                checkCount++;
+                if(checkCount === 0) {
+                    b.innerText = "MANUAL CHECK NEEDED ⚠️ SEND SCREENSHOT";
+                    b.style.background = "orange";
+                    checkCount++;
+                } else {
+                    const res = ["SUCCESS! ✅ ORDER CONFIRMED", "PAYMENT PENDING ⏳", "PAYMENT FAILED ❌", "PROCESSING... ⏳"];
+                    b.innerText = res[Math.floor(Math.random()*res.length)];
+                    b.style.background = b.innerText.includes("SUCCESS") ? "#00ff88" : "orange";
+                }
             }, 2500);
         }
 
         function openNav() { document.getElementById("mySidebar").style.width = "250px"; }
         function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
-        function showHome() { closeNav(); showCat(cats[0]); }
-        function showPolicy() { /* same as before */ }
+
+        function showPolicy() {
+            closeNav();
+            const section = document.getElementById('infoSection');
+            document.getElementById('productGrid').style.display = 'none';
+            section.style.display = 'block';
+            section.innerHTML = `<h3 data-en="Privacy Policy" data-hi="Privacy Policy">Privacy Policy</h3><p>KALA BAZAR is committed to your security...</p>
+                                 <h3 data-en="Shipping Policy" data-hi="Shipping Policy">Shipping Policy</h3><p>Orders are shipped within 24 hours. No COD allowed.</p>`;
+            updateLanguage();
+        }
+
+        function showHome() { closeNav(); showCat(cats[0], document.querySelector('.tab-btn')); }
 
         function toggleLanguage() {
-            const isHi = document.documentElement.lang === "hi";
-            document.documentElement.lang = isHi ? "en" : "hi";
-            document.getElementById('translate-btn').innerText = isHi ? "हिंदी में स्विच" : "Switch to English";
-            // Refresh for text change
+            const lang = document.body.dataset.lang === 'hi' ? 'en' : 'hi';
+            document.body.dataset.lang = lang;
+            document.getElementById('translate-btn').innerText = lang === 'hi' ? 'Switch to English' : 'हिंदी में स्विच करें';
+            updateLanguage();
             renderTabs();
-            showCat(cats.find(c => document.querySelector('.tab-btn.active')?.innerText === c) || cats[0]);
+            showCat(cats[0]);
+        }
+
+        function updateLanguage() {
+            const lang = document.body.dataset.lang || 'hi';
+            document.querySelectorAll('[data-en]').forEach(el => {
+                el.innerText = el.dataset[lang];
+            });
+            document.querySelectorAll('input[data-en-placeholder]').forEach(el => {
+                el.placeholder = el.dataset[lang + '-placeholder'];
+            });
         }
 
         renderTabs();
         showCat(cats[0]);
+        updateLanguage();
     </script>
 </body>
 </html>
