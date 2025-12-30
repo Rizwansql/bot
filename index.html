@@ -3,224 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo Signal - MOD BY SQL</title>
+    <title>KALA BAZAR | Official Store</title>
     <style>
-        body { margin: 0; padding: 0; font-family: Arial, sans-serif; overflow: hidden; }
-        #floatingPanel {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            width: 300px;
-            background: linear-gradient(#000, #111);
-            border: 3px solid #00ff00;
-            border-radius: 15px;
+        /* CSS Section */
+        :root {
+            --primary-color: #1a1a1a;
+            --accent-color: #f39c12;
+            --sale-red: #e74c3c;
+            --green-text: #27ae60;
+            --bg-color: #f4f4f4;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg-color); }
+        
+        header { 
+            background: var(--primary-color); 
+            color: white; 
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .logo { font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; color: var(--accent-color); }
+
+        .category-nav {
+            background: white;
             padding: 10px;
-            box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
-            color: #fff;
-            z-index: 999999;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .cat-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        .cat-btn.active { background: var(--accent-color); color: white; }
+
+        .product-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 25px; 
+            padding: 30px 5%; 
+        }
+
+        .product-card { 
+            background: white; 
+            padding: 15px; 
+            border-radius: 12px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
             text-align: center;
-            user-select: none;
-            touch-action: none; /* Better touch dragging */
-        }
-        .header {
-            background: #ff0000;
-            padding: 8px;
-            cursor: move;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 10px 10px 0 0;
-            margin: -10px -10px 10px -10px;
+            transition: transform 0.3s;
             position: relative;
+            overflow: hidden;
         }
-        .mod { font-size: 14px; color: #00ffea; font-weight: bold; margin: 5px 0; }
-        .timer { font-size: 36px; color: #ffd700; font-weight: bold; margin: 10px 0; }
-        .predict { font-size: 48px; font-weight: 900; min-height: 60px; margin: 10px 0; }
-        .history {
-            font-size: 13px;
-            color: #aaa;
-            margin: 10px 0;
-            max-height: 70px;
-            overflow-y: auto;
-            background: #000;
-            padding: 5px;
-            border-radius: 8px;
+
+        .product-card:hover { transform: translateY(-8px); }
+
+        .product-card img { 
+            width: 100%; 
+            height: 180px; 
+            object-fit: contain; 
+            margin-bottom: 10px;
         }
-        .btn-group { display: flex; justify-content: center; gap: 10px; margin: 10px 0; }
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 10px;
+
+        .product-info h4 { margin: 10px 0; font-size: 1.1rem; color: #2c3e50; }
+        .old-price { text-decoration: line-through; color: #95a5a6; font-size: 0.9rem; }
+        .price { font-size: 1.3rem; color: var(--sale-red); font-weight: bold; margin: 5px 0; }
+        .discount-tag { 
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--green-text);
+            color: white;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            border-radius: 5px;
             font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            flex: 1;
         }
-        .btn-big { background: #00ff00; color: #000; }
-        .btn-small { background: #ff3131; color: #fff; }
-        .minimize-btn {
-            position: absolute;
-            top: 5px;
-            right: 30px;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
+
+        .buy-btn { 
+            background: var(--primary-color); 
+            color: white;
+            border: none; 
+            padding: 12px; 
+            width: 100%;
+            cursor: pointer; 
+            border-radius: 8px; 
+            font-weight: bold;
+            margin-top: 15px; 
+            transition: 0.3s;
         }
-        .close-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
+
+        .buy-btn:hover { background: var(--accent-color); color: black; }
+
+        /* Payment Modal */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); 
+            z-index: 2000;
         }
+
+        .modal-content { 
+            background: white; 
+            width: 90%; 
+            max-width: 400px; 
+            margin: 100px auto; 
+            padding: 35px; 
+            border-radius: 20px; 
+            text-align: center;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 20px 0;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .verify-btn { background: var(--green-text); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px; }
+        .close-btn { background: #95a5a6; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; }
+
     </style>
 </head>
 <body>
 
-<div id="floatingPanel">
-    <div class="header" id="dragHeader">
-        WINGO LIVE SIGNAL PRO
-        <button class="minimize-btn" onclick="toggleMinimize()">–</button>
-        <button class="close-btn" onclick="document.getElementById('floatingPanel').style.display='none'">×</button>
-    </div>
-    <div class="mod">MOD BY SQL</div>
-    
-    <div class="timer" id="timer">60s</div>
-    
-    <div class="predict" id="predict">WAIT</div>
-    
-    <div class="history" id="history">History: None</div>
-    
-    <div style="font-size:12px;">Add Latest Result:</div>
-    <div class="btn-group">
-        <button class="btn btn-big" onclick="addResult('BIG')">BIG</button>
-        <button class="btn btn-small" onclick="addResult('SMALL')">SMALL</button>
-    </div>
-</div>
+    <header>
+        <div class="logo">🏴‍☠️ KALA BAZAR</div>
+        <div id="user-info" style="font-size: 0.9rem;">User: Rizwan (Ethical Hacker)</div>
+    </header>
 
-<script>
-    // Draggable Fix (Main changes here)
-    const panel = document.getElementById('floatingPanel');
-    const header = document.getElementById('dragHeader');
-    let isDragging = false;
-    let currentX = 0;  // Fixed: Initialize
-    let currentY = 0;  // Fixed: Initialize
-    let initialX;
-    let initialY;
+    <div class="category-nav">
+        <button class="cat-btn active" onclick="filterCat('Electronics')">Electronics</button>
+        <button class="cat-btn" onclick="filterCat('Fashion')">Fashion</button>
+        <button class="cat-btn" onclick="filterCat('Smart Home')">Smart Home</button>
+        <button class="cat-btn" onclick="filterCat('Accessories')">Accessories</button>
+    </div>
 
-    const dragStart = (e) => {
-        if (e.type === "touchstart") {
-            initialX = e.touches[0].clientX - currentX;
-            initialY = e.touches[0].clientY - currentY;
-        } else {
-            initialX = e.clientX - currentX;
-            initialY = e.clientY - currentY;
+    <main>
+        <div class="product-grid" id="productDisplay"></div>
+    </main>
+
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color: var(--primary-color);">Secure Checkout</h2>
+            <p><strong>Cash on Delivery (COD) available nahi hai.</strong></p>
+            <p style="color: #666; font-size: 0.85rem;">Order confirm karne ke liye online payment karke Transaction ID enter karein.</p>
+            <input type="text" id="txnId" placeholder="Enter 12-digit Txn ID">
+            <button class="verify-btn" onclick="verifyTransaction()">Verify & Place Order</button>
+            <button class="close-btn" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const categories = ["Electronics", "Fashion", "Smart Home", "Accessories"];
+        let allProducts = [];
+
+        function generateData() {
+            categories.forEach(cat => {
+                for (let i = 1; i <= 100; i++) {
+                    let basePrice = Math.floor(Math.random() * (12000 - 2000) + 2000);
+                    let discountPercent = Math.floor(Math.random() * (75 - 35) + 35); 
+                    let salePrice = Math.floor(basePrice * (1 - discountPercent / 100));
+
+                    allProducts.push({
+                        name: `${cat} Premium Item #${i}`,
+                        category: cat,
+                        price: salePrice,
+                        oldPrice: basePrice,
+                        off: discountPercent,
+                        img: `https://picsum.photos/400/400?random=${cat}${i}`
+                    });
+                }
+            });
         }
-        isDragging = true;
-    };
 
-    const dragMove = (e) => {
-        if (isDragging) {
-            e.preventDefault(); // Better prevent scroll on mobile
-            let x, y;
-            if (e.type === "touchmove") {
-                x = e.touches[0].clientX - initialX;
-                y = e.touches[0].clientY - initialY;
+        function filterCat(category) {
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText === category) btn.classList.add('active');
+            });
+
+            const container = document.getElementById('productDisplay');
+            container.innerHTML = ""; 
+
+            const filtered = allProducts.filter(p => p.category === category);
+            
+            filtered.forEach(p => {
+                container.innerHTML += `
+                    <div class="product-card">
+                        <span class="discount-tag">${p.off}% OFF</span>
+                        <img src="${p.img}" alt="Product">
+                        <div class="product-info">
+                            <h4>${p.name}</h4>
+                            <p class="old-price">M.R.P: ₹${p.oldPrice}</p>
+                            <p class="price">₹${p.price}</p>
+                            <button class="buy-btn" onclick="openModal()">Buy Now</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openModal() { document.getElementById('paymentModal').style.display = 'block'; }
+        function closeModal() { document.getElementById('paymentModal').style.display = 'none'; }
+
+        function verifyTransaction() {
+            const id = document.getElementById('txnId').value;
+            if (id.trim().length >= 10) {
+                alert("KALA BAZAR: Payment verify ho rahi hai. Transaction ID: " + id);
+                closeModal();
             } else {
-                x = e.clientX - initialX;
-                y = e.clientY - initialY;
+                alert("Galti: Kripya sahi Transaction ID dalein.");
             }
-            currentX = x;
-            currentY = y;
-            panel.style.left = x + "px";
-            panel.style.top = y + "px";
-            panel.style.right = "auto";
-            panel.style.bottom = "auto";
-        }
-    };
-
-    const dragEnd = () => {
-        isDragging = false;
-    };
-
-    header.addEventListener('mousedown', dragStart);
-    header.addEventListener('touchstart', dragStart, { passive: false });
-
-    document.addEventListener('mousemove', dragMove);
-    document.addEventListener('touchmove', dragMove, { passive: false });
-
-    document.addEventListener('mouseup', dragEnd);
-    document.addEventListener('touchend', dragEnd);
-
-    // Minimize toggle
-    function toggleMinimize() {
-        const content = panel.querySelectorAll(':not(.header):not(.minimize-btn):not(.close-btn)');
-        content.forEach(el => el.style.display = el.style.display === 'none' ? '' : 'none');
-    }
-
-    let history = [];
-
-    function addResult(res) {
-        history.push(res);
-        if (history.length > 30) history.shift();
-        document.getElementById('history').innerText = "History: " + history.join(" → ");
-    }
-
-    function getPrediction() {
-        if (history.length < 4) return {text: "NEED 4+", color: "orange"};
-
-        let last = history.slice(-4);
-        let str = last.join("");
-
-        if (str.match(/BIG.*BIG.*BIG.*BIG/)) return {text: "SMALL", color: "#ff3131"};
-        if (str.match(/SMALL.*SMALL.*SMALL.*SMALL/)) return {text: "BIG", color: "#00ff00"};
-        if (last[3] === last[2] && last[2] === last[1] && last[1] === last[0]) return {text: last[0] === "BIG" ? "SMALL" : "BIG", color: last[0] === "BIG" ? "#ff3131" : "#00ff00"};
-        if (last.slice(-3).every(x => x === "BIG")) return {text: "SMALL", color: "#ff3131"};
-        if (last.slice(-3).every(x => x === "SMALL")) return {text: "BIG", color: "#00ff00"};
-        if (last.slice(-2).every(x => x === "BIG")) return {text: "SMALL", color: "#ff3131"};
-        if (last.slice(-2).every(x => x === "SMALL")) return {text: "BIG", color: "#00ff00"};
-
-        if (last[0] !== last[1] && last[1] !== last[2] && last[2] !== last[3]) {
-            return {text: last[3] === "BIG" ? "SMALL" : "BIG", color: last[3] === "BIG" ? "#ff3131" : "#00ff00"};
         }
 
-        let recent6 = history.slice(-6);
-        let bigCount = recent6.filter(x => x === "BIG").length;
-        if (bigCount >= 5) return {text: "SMALL", color: "#ff3131"};
-        if (bigCount <= 1) return {text: "BIG", color: "#00ff00"};
-
-        return Math.random() < 0.7 ? 
-            {text: history[history.length-1], color: history[history.length-1] === "BIG" ? "#00ff00" : "#ff3131"} :
-            {text: history[history.length-1] === "BIG" ? "SMALL" : "BIG", color: history[history.length-1] === "BIG" ? "#ff3131" : "#00ff00"};
-    }
-
-    function update() {
-        let now = new Date();
-        let sec = now.getSeconds();
-        let remain = 60 - sec;
-        document.getElementById('timer').innerText = remain + "s";
-
-        let predBox = document.getElementById('predict');
-        if (remain <= 20 && remain > 5) {
-            let pred = getPrediction();
-            predBox.innerText = pred.text;
-            predBox.style.color = pred.color;
-        } else if (remain <= 5) {
-            predBox.innerText = "RESULT...";
-            predBox.style.color = "cyan";
-        } else {
-            predBox.innerText = "ANALYZING...";
-            predBox.style.color = "yellow";
-        }
-    }
-
-    setInterval(update, 1000);
-    update();
-</script>
-
+        generateData();
+        filterCat('Electronics');
+    </script>
 </body>
-</html>
+        </html>
