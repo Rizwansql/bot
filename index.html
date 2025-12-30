@@ -178,4 +178,32 @@
                     <div class="card">
                         <span class="discount-badge">${p.off}% OFF</span>
                         <img src="${p.img}" alt="prod">
-                        <h4>
+                        <h4>${p.name}</h4>
+                        <p class="old-price">M.R.P: ₹${p.mrp}</p>
+                        <p class="price">₹${p.price}</p>
+                        <button class="buy-now" onclick="openModal()">अभी खरीदें</button>
+                    </div>
+                `;
+            });
+        }
+
+        function openModal() { document.getElementById('paymentModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('paymentModal').style.display = 'none'; }
+
+        function verifyTxn() {
+            const val = document.getElementById('txnInput').value;
+            if(val.length > 5) {
+                alert("सफलता! आपकी ट्रांजेक्शन आईडी " + val + " वेरिफिकेशन के लिए भेज दी गई है। आपका ऑर्डर जल्द प्रोसेस होगा।");
+                closeModal();
+            } else {
+                alert("कृपया सही ट्रांजेक्शन आईडी दर्ज करें।");
+            }
+        }
+
+        // Initialize
+        generateStock();
+        renderTabs();
+        showCat(cats[0], document.querySelector('.tab-btn'));
+    </script>
+</body>
+</html>
