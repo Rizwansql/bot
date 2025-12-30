@@ -3,392 +3,453 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KALA BAZAR | Premium Deals</title>
+    <title>KALA BAZAR | Budget Store</title>
     <style>
-        :root { --primary: #2874f0; --dark: #212121; --yellow: #ffc200; --red: #ff6161; --bg: #f1f3f6; }
-        body { font-family: Roboto, Arial, sans-serif; margin: 0; background: var(--bg); -webkit-tap-highlight-color: transparent; padding-bottom: 60px; }
+        :root { --dark: #121212; --gold: #f39c12; --red: #e74c3c; --green: #27ae60; --white: #fff; --gray: #f4f7f6; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--gray); -webkit-tap-highlight-color: transparent; }
         
         /* HEADER */
-        header { background: var(--primary); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .logo { font-size: 1.4rem; font-weight: 900; font-style: italic; letter-spacing: 0.5px; }
-        .logo span { color: var(--yellow); }
-        .menu-btn { font-size: 1.5rem; cursor: pointer; }
+        header { background: var(--dark); color: var(--white); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .logo { font-size: 1.8rem; font-weight: 900; color: var(--gold); letter-spacing: 1px; }
+        .menu-icon { font-size: 1.8rem; cursor: pointer; color: var(--white); }
 
         /* SIDEBAR */
-        .sidebar { height: 100%; width: 0; position: fixed; top: 0; right: 0; background: white; z-index: 2000; overflow-x: hidden; transition: 0.3s; box-shadow: -2px 0 10px rgba(0,0,0,0.3); }
-        .sidebar-header { background: var(--primary); padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; }
-        .sidebar a { padding: 15px 20px; display: block; color: #333; text-decoration: none; border-bottom: 1px solid #eee; font-weight: 500; }
-        
-        /* CATEGORY TABS */
-        .cat-scroll { display: flex; overflow-x: auto; background: white; padding: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); scrollbar-width: none; }
-        .cat-btn { padding: 8px 16px; margin-right: 10px; border-radius: 20px; border: 1px solid #ddd; background: white; white-space: nowrap; font-size: 0.9rem; font-weight: 600; color: #555; transition: 0.2s; }
-        .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .sidebar { height: 100%; width: 0; position: fixed; z-index: 2000; top: 0; right: 0; background-color: #000; overflow-x: hidden; transition: 0.4s; padding-top: 60px; box-shadow: -2px 0 10px rgba(0,0,0,0.5); }
+        .sidebar a { padding: 15px 32px; text-decoration: none; font-size: 1.2rem; color: #818181; display: block; transition: 0.3s; }
+        .sidebar a:hover { color: var(--gold); border-left: 4px solid var(--gold); }
+        .sidebar .closebtn { position: absolute; top: 10px; right: 25px; font-size: 36px; margin-left: 50px; }
 
-        /* PRODUCT GRID */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px; }
-        .card { background: white; border-radius: 4px; overflow: hidden; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        
-        .img-box { height: 160px; width: 100%; display: flex; align-items: center; justify-content: center; padding: 10px; box-sizing: border-box; }
-        .img-box img { max-height: 100%; max-width: 100%; object-fit: contain; transition: transform 0.3s; }
-        
-        .info-box { padding: 10px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
-        .brand { color: #878787; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
-        .p-name { font-size: 0.9rem; color: #212121; margin: 4px 0; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; height: 38px; }
-        
-        .price-line { display: flex; align-items: baseline; gap: 8px; margin-top: 5px; }
-        .final-price { font-size: 1.1rem; font-weight: 600; color: #212121; }
-        .mrp { font-size: 0.8rem; color: #878787; text-decoration: line-through; }
-        .off { font-size: 0.75rem; color: #388e3c; font-weight: bold; }
-        
-        .f-assured { width: 60px; margin-top: 5px; } /* Fake verified badge */
+        /* TABS */
+        .nav-tabs { background: white; display: flex; overflow-x: auto; padding: 15px 5%; gap: 15px; border-bottom: 1px solid #ddd; scrollbar-width: none; }
+        .tab-btn { border: 1px solid #ddd; background: white; padding: 10px 25px; border-radius: 25px; cursor: pointer; white-space: nowrap; font-weight: bold; font-size: 0.95rem; transition: 0.3s; }
+        .tab-btn.active { background: var(--dark); color: var(--gold); border-color: var(--dark); transform: scale(1.05); }
 
-        /* PRODUCT MODAL */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 5000; display: none; flex-direction: column; overflow-y: auto; }
-        .modal-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px; position: sticky; top: 0; background: white; z-index: 10; }
-        .back-btn { font-size: 1.5rem; border: none; background: none; color: #555; }
+        /* GRID */
+        .container { padding: 20px 5%; padding-bottom: 80px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
         
-        .p-detail-img { width: 100%; height: 350px; object-fit: contain; padding: 20px; box-sizing: border-box; }
-        .p-details { padding: 20px; padding-bottom: 80px; }
-        .big-price { font-size: 1.8rem; font-weight: 700; }
-        
-        .specs { margin-top: 20px; border: 1px solid #eee; border-radius: 8px; padding: 15px; }
-        .spec-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; }
-        
-        .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 5001; }
-        .btn-half { flex: 1; padding: 16px; font-weight: bold; text-align: center; font-size: 1rem; border: none; }
-        .btn-white { background: white; color: #212121; }
-        .btn-orange { background: #fb641b; color: white; }
-        .btn-yellow { background: #ff9f00; color: white; }
+        /* PRODUCT CARD */
+        .card { background: white; border-radius: 12px; padding: 10px; position: relative; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 180px; object-fit: cover; background: #eee; margin-bottom: 10px; border-radius: 8px; }
+        .discount-badge { position: absolute; top: 10px; left: 10px; background: var(--red); color: white; padding: 4px 8px; font-size: 0.7rem; font-weight: bold; border-radius: 4px; }
+        .card h4 { margin: 5px 0; font-size: 0.9rem; color: #333; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.3; }
+        .price-row { display: flex; align-items: baseline; gap: 8px; margin-top: 5px; }
+        .current-price { color: var(--dark); font-weight: 900; font-size: 1.1rem; }
+        .mrp-price { text-decoration: line-through; color: #999; font-size: 0.85rem; }
 
-        /* CHECKOUT & PAY MODAL */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; display: none; justify-content: center; align-items: flex-end; }
-        .sheet { background: white; width: 100%; border-radius: 16px 16px 0 0; padding: 20px; animation: slideUp 0.3s; max-height: 85vh; overflow-y: auto; }
-        @keyframes slideUp { from {transform: translateY(100%);} to {transform: translateY(0);} }
-        
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        .pay-option { padding: 15px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .pay-option.active { border-color: var(--primary); background: #f5faff; }
-        
-        .crypto-box { background: #222; color: #0f0; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; word-break: break-all; text-align: center; margin-top: 5px; }
+        /* DETAILED MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; justify-content: center; align-items: flex-end; }
+        @media(min-width: 768px) { .modal-overlay { align-items: center; } }
 
+        .modal-box { background: white; width: 100%; max-width: 500px; max-height: 90vh; border-radius: 20px 20px 0 0; overflow-y: auto; padding: 20px; position: relative; animation: slideUp 0.3s ease-out; }
+        @media(min-width: 768px) { .modal-box { border-radius: 15px; width: 90%; } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .main-img-container { width: 100%; height: 320px; display: flex; justify-content: center; align-items: center; background: #f9f9f9; border-radius: 10px; margin-bottom: 10px; overflow: hidden; position: relative; }
+        /* CSS Trick for Colors: Blend mode ensures the color overlays nicely */
+        .main-img { width: 100%; height: 100%; object-fit: contain; transition: 0.3s; mix-blend-mode: multiply; } 
+        .img-bg-layer { position: absolute; top:0; left:0; width:100%; height:100%; background:white; z-index:-1; }
+        
+        .thumb-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .thumb { width: 70px; height: 70px; border: 2px solid #eee; border-radius: 8px; object-fit: cover; cursor: pointer; opacity: 0.6; transition: 0.2s; }
+        .thumb.active { border-color: var(--gold); opacity: 1; transform: scale(1.05); }
+
+        .modal-title { font-size: 1.3rem; font-weight: bold; margin: 10px 0 5px; }
+        .modal-desc { color: #666; font-size: 0.9rem; line-height: 1.4; margin-bottom: 15px; }
+        
+        .option-group { margin-bottom: 15px; }
+        .option-label { font-weight: bold; margin-bottom: 8px; display: block; font-size: 0.9rem; }
+        .color-row { display: flex; gap: 10px; }
+        .color-circle { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #ccc; cursor: pointer; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .color-circle.selected { border: 2px solid var(--dark); transform: scale(1.1); }
+        .color-circle.selected::after { content: '✓'; color: white; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 14px; text-shadow: 0 0 2px black; }
+
+        .size-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .size-box { border: 1px solid #ccc; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+        .size-box.selected { background: var(--dark); color: var(--gold); border-color: var(--dark); }
+
+        .buy-action-btn { background: var(--gold); width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 900; color: var(--dark); cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 10px; }
+        .close-modal-btn { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.1); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; z-index: 10; }
+
+        /* INFO & PAY MODALS */
+        .info-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 6000; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .info-box { background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 100%; text-align: center; }
+        
+        .form-input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
+        .pay-box { background: #111; padding: 25px; border: 1px solid var(--gold); border-radius: 20px; width: 90%; max-width: 400px; text-align: center; color: white; position: relative; }
+        .method-btn { display: flex; align-items: center; gap: 15px; background: #222; border: 1px solid #333; padding: 12px; margin-bottom: 10px; border-radius: 10px; color: white; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .method-btn:hover { border-color: var(--gold); background: #2a2a2a; }
+        .method-btn img { width: 30px; height: 30px; }
+        
+        .utr-input { background: #000; color: #00ff88; border: 1px solid #444; width: 100%; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 10px; box-sizing: border-box; }
+        .verify-btn { background: #00ff88; color: black; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="menu-btn" onclick="toggleSide()">☰</div>
-        <div class="logo">KALA <span>BAZAR</span></div>
-        <div style="font-size:1.2rem;">🛒</div>
+        <div class="logo">KALA BAZAR</div>
+        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
     </header>
 
     <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <span>Menu</span>
-            <span onclick="toggleSide()" style="cursor:pointer; font-size:1.5rem;">×</span>
-        </div>
-        <a href="#" onclick="render('Mobiles'); toggleSide()">Mobiles & Tablets</a>
-        <a href="#" onclick="render('Electronics'); toggleSide()">Electronics</a>
-        <a href="#" onclick="render('Fashion'); toggleSide()">Fashion</a>
-        <a href="#" onclick="render('Shoes'); toggleSide()">Footwear</a>
-        <a href="#" onclick="showPolicy(); toggleSide()">Legal & Policy</a>
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar()">×</a>
+        <a href="#" onclick="filterCategory('All'); toggleSidebar()">Home</a>
+        <a href="#" onclick="showPolicy(); toggleSidebar()">Privacy Policy</a>
+        <a href="#" onclick="alert('Support: +91-9876543210'); toggleSidebar()">Contact Us</a>
     </div>
 
-    <div class="cat-scroll" id="cat-tabs">
-        </div>
+    <div class="nav-tabs" id="categoryNav"></div>
+    <div class="container">
+        <div class="grid" id="productGrid"></div>
+    </div>
 
-    <div class="grid" id="grid">
-        </div>
-
-    <div id="product-modal" class="modal">
-        <div class="modal-header">
-            <button class="back-btn" onclick="closeModal()">←</button>
-            <span style="font-weight:600;">Product Details</span>
-        </div>
-        
-        <img id="d-img" class="p-detail-img" src="" alt="">
-        
-        <div class="p-details">
-            <div style="color:#878787; font-size:0.8rem; font-weight:bold;" id="d-brand"></div>
-            <h2 id="d-name" style="margin:5px 0; font-size:1.1rem; line-height:1.4;"></h2>
+    <div id="detailModal" class="modal-overlay">
+        <div class="modal-box">
+            <button class="close-modal-btn" onclick="closeDetail()">✕</button>
             
-            <div class="price-line" style="margin: 10px 0;">
-                <span id="d-price" class="big-price"></span>
-                <span id="d-mrp" class="mrp" style="font-size:1rem;"></span>
-                <span id="d-off" class="off" style="font-size:1rem;"></span>
+            <div class="main-img-container" id="img-container-bg">
+                <div class="img-bg-layer"></div>
+                <img id="d-main-img" src="" class="main-img" alt="Product">
             </div>
             
-            <div class="specs">
-                <h4>Key Features</h4>
-                <div id="d-specs"></div>
-            </div>
-            
-            <p style="color:#666; font-size:0.9rem; line-height:1.5; margin-top:15px;">
-                100% Original Product. 7 Days Replacement Policy. Cash on Delivery not available for this premium item.
-            </p>
-        </div>
+            <div class="thumb-row" id="d-thumbs"></div>
 
-        <div class="bottom-bar">
-            <button class="btn-half btn-white" onclick="closeModal()">ADD TO CART</button>
-            <button class="btn-half btn-yellow" onclick="openAddress()">BUY NOW</button>
+            <h2 id="d-name" class="modal-title"></h2>
+            <div class="price-row">
+                <span id="d-price" class="current-price"></span>
+                <span id="d-mrp" class="mrp-price"></span>
+                <span id="d-off" style="color:var(--green); font-weight:bold; font-size:0.9rem;"></span>
+            </div>
+            <p id="d-desc" class="modal-desc"></p>
+
+            <div class="option-group">
+                <span class="option-label">Select Color (Tap to see change)</span>
+                <div class="color-row" id="d-colors"></div>
+            </div>
+
+            <div class="option-group" id="size-group">
+                <span class="option-label" id="size-label">Select Variant</span>
+                <div class="size-row" id="d-sizes"></div>
+            </div>
+
+            <button class="buy-action-btn" onclick="openCheckout()">BUY NOW</button>
         </div>
     </div>
 
-    <div id="addr-modal" class="overlay">
-        <div class="sheet">
-            <h3>Delivery Details</h3>
-            <input type="text" id="in-name" placeholder="Full Name (पूरा नाम)">
-            <input type="tel" id="in-phone" placeholder="Mobile Number">
-            <input type="text" id="in-addr" placeholder="Address (Area, City)">
-            <input type="number" id="in-pin" placeholder="Pincode">
-            <button class="btn-half btn-orange" style="width:100%; border-radius:4px; margin-top:10px;" onclick="openPay()">CONTINUE</button>
-            <button onclick="document.getElementById('addr-modal').style.display='none'" style="width:100%; background:white; border:none; padding:10px; color:red;">Cancel</button>
+    <div id="checkoutModal" class="modal-overlay">
+        <div class="modal-box" style="max-width:400px;">
+            <h3>Delivery Address</h3>
+            <input type="text" id="c-name" class="form-input" placeholder="Full Name (पूरा नाम)">
+            <input type="tel" id="c-phone" class="form-input" placeholder="Mobile Number (मोबाइल)">
+            <input type="text" id="c-addr" class="form-input" placeholder="Full Address (House, Street)">
+            <input type="number" id="c-pin" class="form-input" placeholder="PIN Code">
+            
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button onclick="document.getElementById('checkoutModal').style.display='none'" style="flex:1; padding:12px; border:1px solid #ddd; background:white; border-radius:8px;">Cancel</button>
+                <button onclick="processCheckout()" style="flex:1; padding:12px; background:var(--dark); color:var(--gold); border:none; border-radius:8px; font-weight:bold;">Proceed</button>
+            </div>
         </div>
     </div>
 
-    <div id="pay-modal" class="overlay">
-        <div class="sheet">
-            <h3>Payment Options</h3>
-            <div style="background:#f0f0f0; padding:10px; border-radius:5px; margin-bottom:15px;">
-                <span style="color:#666;">Amount to Pay:</span>
-                <strong style="font-size:1.2rem; float:right;" id="pay-total"></strong>
+    <div id="payModal" class="modal-overlay" style="z-index: 6000;">
+        <div class="pay-box">
+            <h2 style="color:var(--gold); margin-top:0;">PAYMENT</h2>
+            <p style="color:#ccc;">Total Amount</p>
+            <p id="pay-amt" style="font-size:1.8rem; font-weight:900; color:#fff; margin:-10px 0 20px;">₹0</p>
+
+            <a id="link-gpay" href="#" class="method-btn"><img src="https://img.icons8.com/color/48/google-pay.png"> Google Pay</a>
+            <a id="link-phonepe" href="#" class="method-btn"><img src="https://img.icons8.com/color/48/phone-pe.png"> PhonePe</a>
+            <a id="link-paytm" href="#" class="method-btn"><img src="https://img.icons8.com/color/48/paytm.png"> Paytm</a>
+
+            <div class="method-btn" onclick="copyCrypto('bc1qxy2kgdy6jrsq4z62v3860v6lcyv5uvvhu0m6ax', 'BTC')">
+                <img src="https://img.icons8.com/color/48/bitcoin.png"> Bitcoin (Copy)
             </div>
 
-            <div class="pay-option" onclick="payMode='upi'">
-                <img src="https://img.icons8.com/color/48/google-pay.png" width="30"> 
-                <div>
-                    <div style="font-weight:bold">UPI (GPay/PhonePe)</div>
-                    <div style="font-size:0.8rem; color:green;">Extra 5% Discount applied</div>
-                </div>
-            </div>
-
-            <div class="pay-option" onclick="document.getElementById('crypto-sec').style.display='block'">
-                <img src="https://img.icons8.com/color/48/bitcoin.png" width="30">
-                <div style="font-weight:bold">Crypto (USDT/BTC)</div>
-            </div>
-            <div id="crypto-sec" style="display:none; margin-bottom:15px;">
-                <div class="crypto-box" onclick="copyC('bc1qxy2kgdy6jrsq4z62v3860v6lcyv5uvvhu0m6ax')">BTC: bc1qxy2... (Tap to Copy)</div>
-                <div class="crypto-box" onclick="copyC('0xea67ed86d2a3f145a37f008c5bc0c523b50a039a')">USDT: 0xea67... (Tap to Copy)</div>
-            </div>
-
-            <div style="margin-top:20px; border-top:1px solid #ddd; padding-top:15px;">
-                <label style="font-size:0.9rem; font-weight:bold;">Enter Payment/UTR ID:</label>
-                <input type="text" id="utr-code" placeholder="Example: 3456XXXXXX">
-                <button class="btn-half btn-yellow" style="width:100%; border-radius:4px;" onclick="verifyTxn()">CONFIRM ORDER</button>
+            <div style="border-top:1px solid #333; padding-top:15px; margin-top:10px;">
+                <input type="text" id="txn-id" class="utr-input" placeholder="Enter Transaction/UTR ID">
+                <button id="verify-btn" class="verify-btn" onclick="verifyPayment()">VERIFY PAYMENT</button>
+                <button onclick="document.getElementById('payModal').style.display='none'" style="background:none; border:none; color:var(--red); margin-top:10px; cursor:pointer; font-weight:bold;">CANCEL</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- REALISTIC DATA ENGINE ---
+        // --- DATA CONFIGURATION ---
+        const categories = ["Mobiles", "Fashion", "Watches", "Shoes"];
         
-        // 1. High Quality Image IDs (Modern Items Only)
-        const images = {
-            mobiles: [
-                "1616348407560-8f42a1166ddb", // iPhone 12/13
-                "1610945865010-8186638d663e", // Samsung Dark
-                "1592814049830-47b2c0199dc2", // iPhone holding
-                "1511707171634-5f897ff02aa9", // Modern Smartphone flat
-                "1603539947307-b38a049cb377", // Android Clean
-                "1565849904479-facda3ecc50b"  // Google Pixel style
-            ],
-            electronics: [
-                "1579586337278-3c9454c95b9c", // Laptop
-                "1546868871-7041f2a55e12", // Smart Watch Apple
-                "1505740420926-70d130299135", // Headphones
-                "1527864550417-7b3c1b35ca90", // DSLR Camera
-                "1544244015-0df4b3ffc6b0"  // iPad
-            ],
-            fashion: [
-                "1523381210434-271e8be1f52b", // T-shirt
-                "1483985988355-763728e1935b", // Hoodie
-                "1591557662254-4132504a7418", // Mens formal
-                "1617137968427-85924c800a22", // Jacket
-                "1503341455253-b2e72333dbdb"  // Cool shirt
-            ],
-            shoes: [
-                "1542291026-7eec264c27ff", // Red Nike
-                "1606107557195-0e29a4b5b4aa", // Green Sneaker
-                "1560769625-ed5974729e12", // White Kicks
-                "1595950653106-6c9ebd614d3a", // Sport Shoe
-                "1525966235021-331deae23f47"  // Boots
-            ]
-        };
+        // Mobile Data Pools (For Accuracy)
+        const mobileBrands = ["Samsung", "Redmi", "Realme", "Vivo", "Oppo", "Poco", "Infinix", "Motorola"];
+        const mobileModels = ["Galaxy M14", "Note 12", "C55", "Y16", "A17", "C31", "Hot 30", "G32", "Narzo 50", "A04s"];
+        
+        // High Quality Unsplash IDs for Mobiles (Generic smartphones that look good)
+        // These serve as the "Main" image.
+        const mobileImages = [
+            "1511707171634-5f897ff02aa9", "1598327105666-5b89351aff75", "1556656793-0275bada8d53", 
+            "1592814049830-47b2c0199dc2", "1546054454-aa26e2b734c7", "1580910051074-9b160b57f20f",
+            "1570891836654-d4961a7b6929", "1601784551446-7f58d8758252", "1565849963757-544687ed43d4"
+        ];
 
-        // 2. Real Model Names Database
-        const db = {
-            'Mobiles': [
-                {name: "Apple iPhone 14 (128GB)", brand: "Apple", mrp: 69900},
-                {name: "Samsung Galaxy S23 Ultra", brand: "Samsung", mrp: 124999},
-                {name: "OnePlus 11R 5G", brand: "OnePlus", mrp: 39999},
-                {name: "Google Pixel 7 Pro", brand: "Google", mrp: 84999},
-                {name: "Xiaomi 13 Pro", brand: "Xiaomi", mrp: 79999},
-                {name: "Realme GT 2 Pro", brand: "Realme", mrp: 29999}
-            ],
-            'Electronics': [
-                {name: "Apple MacBook Air M2", brand: "Apple", mrp: 114900},
-                {name: "Sony WH-1000XM5 Headphones", brand: "Sony", mrp: 29990},
-                {name: "Apple Watch Series 9", brand: "Apple", mrp: 41900},
-                {name: "Canon EOS 1500D DSLR", brand: "Canon", mrp: 47990},
-                {name: "iPad Air 5th Gen", brand: "Apple", mrp: 59900}
-            ],
-            'Fashion': [
-                {name: "Levi's Men Slim Fit Jeans", brand: "Levi's", mrp: 2999},
-                {name: "U.S. Polo Assn. Shirt", brand: "USPA", mrp: 2499},
-                {name: "Puma Motorsport Jacket", brand: "Puma", mrp: 4999},
-                {name: "Allen Solly Formal Shirt", brand: "Allen Solly", mrp: 1899},
-                {name: "Zara Man Casual Tee", brand: "Zara", mrp: 1590}
-            ],
-            'Shoes': [
-                {name: "Nike Air Jordan 1 High", brand: "Nike", mrp: 16995},
-                {name: "Adidas Ultraboost Light", brand: "Adidas", mrp: 18999},
-                {name: "Puma RS-X Sneakers", brand: "Puma", mrp: 9999},
-                {name: "Reebok Classic Leather", brand: "Reebok", mrp: 6599},
-                {name: "Woodland Leather Boots", brand: "Woodland", mrp: 5495}
-            ]
-        };
+        function getImg(cat, index) {
+            if(cat === 'Mobiles') return `https://images.unsplash.com/photo-${mobileImages[index % mobileImages.length]}?auto=format&fit=crop&w=500&q=80`;
+            if(cat === 'Fashion') return `https://images.unsplash.com/photo-${["1523381210434-271e8be1f52b","1515886657613-9f3515b0c78f","1483985988355-763728e1935b"][index%3]}?auto=format&fit=crop&w=500&q=80`;
+            if(cat === 'Watches') return `https://images.unsplash.com/photo-${["1524592094714-0f0654e20314","1522312346375-d1a52e2b99b3","1542496658-e33a6d0d50e6"][index%3]}?auto=format&fit=crop&w=500&q=80`;
+            return `https://images.unsplash.com/photo-${["1542291026-7eec264c27ff","1606107557195-0e29a4b5b4aa","1560769625-ed5974729e12"][index%3]}?auto=format&fit=crop&w=500&q=80`;
+        }
 
-        let currentCat = 'Mobiles';
-        let activeItem = null;
-        let checkCount = 0; // For verify logic
+        // --- GENERATE 30+ PRODUCTS ---
+        const products = {};
+        
+        categories.forEach(cat => {
+            // Generating 32 items per category for a fuller grid
+            products[cat] = Array.from({length: 32}).map((_, i) => {
+                const isMobile = cat === "Mobiles";
+                
+                // Name Logic
+                let pName = "";
+                if(isMobile) {
+                    const brand = mobileBrands[i % mobileBrands.length];
+                    const model = mobileModels[i % mobileModels.length];
+                    pName = `${brand} ${model} (4GB, 64GB)`;
+                } else {
+                    pName = `${cat} Premium Item ${i+1}`;
+                }
+
+                // Price Logic (Strictly 5000-15000 for phones)
+                let price = 0;
+                let mrp = 0;
+                
+                if(isMobile) {
+                    // Random price between 5000 and 15000
+                    price = Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000;
+                    // Round to nearest 99 (e.g., 5999)
+                    price = Math.ceil(price / 100) * 100 - 1;
+                    mrp = price + Math.floor(Math.random() * 4000) + 2000;
+                } else {
+                    price = 499 + (i * 50); 
+                    mrp = price + 500;
+                }
+
+                // Image Logic (Gallery creation)
+                const baseImg = getImg(cat, i);
+                // Creating a realistic gallery by using crop parameters on the SAME image
+                // so it looks like the user is zooming in or looking at details of THAT product.
+                const gallery = [
+                    baseImg, 
+                    baseImg + "&w=600&h=600&fit=crop&crop=center", // Zoom center
+                    baseImg + "&w=600&h=600&fit=crop&crop=left",   // Detail left
+                    baseImg + "&blur=1" // Artistic shot
+                ];
+
+                return {
+                    id: `${cat.charAt(0)}${i}`,
+                    name: pName,
+                    price: price,
+                    mrp: mrp,
+                    img: baseImg,
+                    gallery: gallery,
+                    desc: isMobile 
+                        ? `Brand new ${pName}. Features 5000mAh Battery, HD+ Display, and AI Camera. 1 Year Warranty included. Box contains Charger, Cable, and Case.` 
+                        : `High quality ${cat}. Durable material, premium finish. Perfect for daily use.`,
+                    colors: ["#222", "#444", "#3b82f6", "#e74c3c"], // Black, Gray, Blue, Red
+                    sizes: isMobile ? ["4GB+64GB", "6GB+128GB"] : ["S", "M", "L", "XL"],
+                    sizeLabel: isMobile ? "Storage" : "Size"
+                };
+            });
+        });
+
+        // Global State
+        let currentProduct = null;
+        let selectedColor = null;
+        let selectedSize = null;
+        let checkCount = 0;
 
         // --- FUNCTIONS ---
-
         function init() {
-            const tabs = document.getElementById('cat-tabs');
-            const cats = Object.keys(db);
-            tabs.innerHTML = cats.map(c => 
-                `<button class="cat-btn ${c===currentCat?'active':''}" onclick="render('${c}')">${c}</button>`
+            const nav = document.getElementById('categoryNav');
+            nav.innerHTML = categories.map((c, i) => 
+                `<button class="tab-btn ${i===0?'active':''}" onclick="loadCat('${c}', this)">${c}</button>`
             ).join('');
-            render(currentCat);
+            loadCat(categories[0]);
         }
 
-        function render(cat) {
-            currentCat = cat;
-            // Update tabs
-            document.querySelectorAll('.cat-btn').forEach(b => {
-                b.classList.remove('active');
-                if(b.innerText === cat) b.classList.add('active');
-            });
-
-            const grid = document.getElementById('grid');
+        function loadCat(cat, btn) {
+            if(btn) {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
-
-            // Generate Products
-            const items = db[cat];
-            const imgList = images[cat.toLowerCase()];
-
-            items.forEach((item, index) => {
-                // Calculation: Price is 30-40% less than MRP (Realistic Deal)
-                const discountPercent = Math.floor(Math.random() * (40 - 25 + 1)) + 25;
-                const sellPrice = Math.floor(item.mrp * (1 - discountPercent/100));
-                
-                // Assign a stable image based on index
-                const imgUrl = `https://images.unsplash.com/photo-${imgList[index % imgList.length]}?auto=format&fit=crop&w=400&q=80`;
-
-                // Store for detail view
-                item.finalPrice = sellPrice;
-                item.off = discountPercent;
-                item.img = imgUrl;
-
+            
+            products[cat].forEach(p => {
+                const off = Math.round(((p.mrp - p.price)/p.mrp)*100);
                 grid.innerHTML += `
-                    <div class="card" onclick='openDetail(${JSON.stringify(item)})'>
-                        <div class="img-box"><img src="${imgUrl}" loading="lazy"></div>
-                        <div class="info-box">
-                            <div class="brand">${item.brand}</div>
-                            <div class="p-name">${item.name}</div>
-                            <div class="price-line">
-                                <span class="final-price">₹${sellPrice}</span>
-                                <span class="mrp">₹${item.mrp}</span>
-                                <span class="off">${discountPercent}% Off</span>
-                            </div>
-                            <img src="https://img1a.flixcart.com/www/linchpin/fk-cp-zion/img/fa_62673a.png" class="f-assured">
+                    <div class="card" onclick="openDetail('${cat}', '${p.id}')">
+                        <span class="discount-badge">${off}% OFF</span>
+                        <img src="${p.img}" alt="${p.name}" loading="lazy">
+                        <h4>${p.name}</h4>
+                        <div class="price-row">
+                            <span class="current-price">₹${p.price.toLocaleString()}</span>
+                            <span class="mrp-price">₹${p.mrp.toLocaleString()}</span>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
-        function openDetail(item) {
-            activeItem = item;
-            document.getElementById('d-img').src = item.img;
-            document.getElementById('d-brand').innerText = item.brand;
-            document.getElementById('d-name').innerText = item.name;
-            document.getElementById('d-price').innerText = `₹${item.finalPrice}`;
-            document.getElementById('d-mrp').innerText = `₹${item.mrp}`;
-            document.getElementById('d-off').innerText = `${item.off}% off`;
+        function openDetail(cat, pid) {
+            const p = products[cat].find(x => x.id === pid);
+            if(!p) return;
+            currentProduct = p;
+            selectedColor = p.colors[0];
+            selectedSize = null; // Reset size selection
+
+            // Populate Text
+            document.getElementById('d-name').innerText = p.name;
+            document.getElementById('d-price').innerText = `₹${p.price.toLocaleString()}`;
+            document.getElementById('d-mrp').innerText = `MRP: ₹${p.mrp.toLocaleString()}`;
+            const off = Math.round(((p.mrp - p.price)/p.mrp)*100);
+            document.getElementById('d-off').innerText = `(${off}% OFF)`;
+            document.getElementById('d-desc').innerText = p.desc;
             
-            // Fake Specs
-            const specs = generateSpecs(item.brand, currentCat);
-            document.getElementById('d-specs').innerHTML = specs;
-            
-            document.getElementById('product-modal').style.display = 'flex';
+            // Populate Images (Gallery)
+            const mainImg = document.getElementById('d-main-img');
+            mainImg.src = p.gallery[0];
+            mainImg.style.filter = 'none'; // Reset filter
+
+            const thumbDiv = document.getElementById('d-thumbs');
+            thumbDiv.innerHTML = p.gallery.map((src, i) => 
+                `<img src="${src}" class="thumb ${i===0?'active':''}" onclick="setMainImg('${src}', this)">`
+            ).join('');
+
+            // Populate Colors
+            document.getElementById('d-colors').innerHTML = p.colors.map((c, i) => 
+                `<div class="color-circle ${i===0?'selected':''}" style="background:${c}" onclick="selCol(this, '${c}')"></div>`
+            ).join('');
+
+            // Populate Sizes
+            const sizeGroup = document.getElementById('size-group');
+            if(p.sizes.length > 0) {
+                sizeGroup.style.display = 'block';
+                document.getElementById('size-label').innerText = "Select " + p.sizeLabel;
+                document.getElementById('d-sizes').innerHTML = p.sizes.map(s => 
+                    `<div class="size-box" onclick="selSize(this, '${s}')">${s}</div>`
+                ).join('');
+            } else {
+                sizeGroup.style.display = 'none';
+            }
+
+            document.getElementById('detailModal').style.display = 'flex';
         }
 
-        function generateSpecs(brand, cat) {
-            if(cat === 'Mobiles') return `<div class="spec-row"><span>RAM</span><span>8 GB / 12 GB</span></div><div class="spec-row"><span>Camera</span><span>50MP + 12MP</span></div><div class="spec-row"><span>Battery</span><span>5000 mAh</span></div><div class="spec-row"><span>Processor</span><span>Snapdragon 8 Gen 2</span></div>`;
-            if(cat === 'Shoes') return `<div class="spec-row"><span>Outer Material</span><span>Synthetic Leather</span></div><div class="spec-row"><span>Sole</span><span>Rubber / Phylon</span></div><div class="spec-row"><span>Closure</span><span>Lace-Up</span></div>`;
-            return `<div class="spec-row"><span>Warranty</span><span>1 Year Brand Warranty</span></div><div class="spec-row"><span>Quality</span><span>Premium First Copy</span></div>`;
+        // Gallery Switcher
+        function setMainImg(src, el) {
+            document.getElementById('d-main-img').src = src;
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
         }
 
-        function openAddress() {
-            document.getElementById('addr-modal').style.display = 'flex';
-        }
+        // Color Logic with Visual Effect
+        function selCol(el, c) {
+            selectedColor = c;
+            document.querySelectorAll('.color-circle').forEach(x => x.classList.remove('selected'));
+            el.classList.add('selected');
 
-        function openPay() {
-            const n = document.getElementById('in-name').value;
-            const p = document.getElementById('in-phone').value;
-            if(!n || !p) return alert("Please fill Name and Phone");
+            // Visual Trick: Apply a slight filter to the image to mimic color change
+            const img = document.getElementById('d-main-img');
+            // Reset filters first
+            img.style.filter = 'none';
             
-            document.getElementById('addr-modal').style.display = 'none';
-            document.getElementById('pay-modal').style.display = 'flex';
-            document.getElementById('pay-total').innerText = "₹" + activeItem.finalPrice;
-            checkCount = 0; // Reset verification logic
+            if(c === '#e74c3c') { // Red
+                img.style.filter = 'sepia(1) hue-rotate(-50deg) saturate(3)'; 
+            } else if (c === '#3b82f6') { // Blue
+                img.style.filter = 'sepia(1) hue-rotate(180deg) saturate(2)';
+            } else if (c === '#888' || c === '#444') { // Grey/Dark
+                img.style.filter = 'grayscale(100%)';
+            } else {
+                img.style.filter = 'none'; // Default/Black
+            }
         }
 
-        function verifyTxn() {
-            const utr = document.getElementById('utr-code').value;
-            if(utr.length < 5) return alert("Invalid UTR/Transaction ID");
+        function selSize(el, s) {
+            selectedSize = s;
+            document.querySelectorAll('.size-box').forEach(x => x.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        function openCheckout() {
+            if(currentProduct.sizes.length > 0 && !selectedSize) {
+                alert(`Please select a ${currentProduct.sizeLabel} (वेरिएंट चुनें)`);
+                return;
+            }
+            document.getElementById('detailModal').style.display = 'none';
+            document.getElementById('checkoutModal').style.display = 'flex';
+        }
+
+        function processCheckout() {
+            const n = document.getElementById('c-name').value;
+            const p = document.getElementById('c-phone').value;
             
-            const btn = document.querySelector('#pay-modal button.btn-yellow');
-            const originalText = btn.innerText;
-            btn.innerText = "Verifying...";
+            if(!n || !p) {
+                alert("Please enter Name and Phone Number");
+                return;
+            }
+            
+            document.getElementById('checkoutModal').style.display = 'none';
+            
+            // Payment Setup
+            document.getElementById('payModal').style.display = 'flex';
+            document.getElementById('pay-amt').innerText = "₹" + currentProduct.price.toLocaleString();
+            
+            const upi = `upi://pay?pa=rizwanhasan90122778623@ybl&am=${currentProduct.price}&cu=INR`;
+            document.getElementById('link-gpay').href = upi;
+            document.getElementById('link-phonepe').href = upi;
+            document.getElementById('link-paytm').href = upi;
+            checkCount = 0;
+        }
+
+        function verifyPayment() {
+            const btn = document.getElementById('verify-btn');
+            const val = document.getElementById('txn-id').value;
+            
+            if(val.length < 5) return alert("Please enter a valid Transaction/UTR ID");
+
+            btn.innerText = "VERIFYING... ⏳";
+            btn.style.opacity = "0.7";
             
             setTimeout(() => {
+                btn.style.opacity = "1";
                 if(checkCount === 0) {
-                    alert("⚠️ Payment Not Found!\nPlease enter correct Transaction ID and try again.");
-                    btn.innerText = "Retry Verification";
-                    btn.style.background = "#ff6161"; // Red
+                    btn.innerText = "PAYMENT NOT FOUND ❌ RETRY";
+                    btn.style.background = "#ff4444";
                     checkCount++;
                 } else {
-                    btn.innerText = "Verified ✅";
-                    btn.style.background = "#4caf50"; // Green
-                    alert(`Order Placed Successfully!\n\nOrder ID: #${Math.floor(100000 + Math.random() * 900000)}\nTracking link sent to ${document.getElementById('in-phone').value}`);
-                    location.reload();
+                    btn.innerText = "SUCCESS ✅ ORDER PLACED";
+                    btn.style.background = "#00ff88";
+                    setTimeout(() => { 
+                        alert(`Thank you, ${document.getElementById('c-name').value}! Your order for ${currentProduct.name} is confirmed.`); 
+                        location.reload(); 
+                    }, 2000);
                 }
-            }, 2000);
+            }, 2500);
         }
 
-        function copyC(txt) {
+        function copyCrypto(txt, name) {
             navigator.clipboard.writeText(txt);
-            alert("Address Copied!");
+            alert(name + " Address Copied!");
         }
 
-        function closeModal() {
-            document.getElementById('product-modal').style.display = 'none';
+        function showPolicy() {
+            alert("Policies: 7 Days Return available on Mobiles. Instant Refund to Bank Account.");
         }
 
-        function toggleSide() {
+        function closeDetail() { document.getElementById('detailModal').style.display='none'; }
+        function toggleSidebar() { 
             const s = document.getElementById('sidebar');
             s.style.width = s.style.width === '250px' ? '0' : '250px';
         }
-        
-        function showPolicy() {
-            alert("Return Policy: 7 Days Return available. Refund processed within 24 hours of pickup.");
-        }
 
-        // Initialize
         init();
-
     </script>
 </body>
 </html>
