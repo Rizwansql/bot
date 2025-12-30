@@ -3,63 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diuapk Pro Predictor</title>
+    <title>Ultimate Predictor Pro - 2025 Edition</title>
     <style>
         body {
-            background-color: #000;
+            background: linear-gradient(#000, #111);
             color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             text-align: center;
             margin: 0;
-            padding: 15px;
-            border: 3px solid #00d4ff;
-            border-radius: 20px;
+            padding: 20px;
+            border: 4px solid #00ffea;
+            border-radius: 25px;
+            min-height: 100vh;
         }
-        .header { color: #00d4ff; font-size: 14px; letter-spacing: 2px; margin-bottom: 10px; }
-        .timer { font-size: 40px; color: #f1c40f; font-weight: bold; text-shadow: 0 0 10px #f1c40f; }
-        .predict-box {
-            font-size: 55px;
-            font-weight: 900;
-            margin: 20px 0;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .history-view { color: #888; font-size: 14px; margin-bottom: 20px; height: 20px; }
-        .btn-group { display: flex; justify-content: center; gap: 15px; }
+        .header { color: #00ffea; font-size: 24px; letter-spacing: 3px; margin-bottom: 20px; text-shadow: 0 0 15px #00ffea; }
+        .timer { font-size: 50px; color: #ffd700; font-weight: bold; text-shadow: 0 0 15px #ffd700; margin: 20px 0; }
+        .predict-box { font-size: 60px; font-weight: 900; margin: 30px 0; min-height: 100px; display: flex; align-items: center; justify-content: center; }
+        .history { color: #aaa; font-size: 18px; margin: 20px 0; }
+        .btn-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
         .btn {
-            padding: 15px 25px;
+            padding: 20px 40px;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 24px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.3s;
+            box-shadow: 0 8px #000;
         }
-        .btn-big { background: #00FF00; color: #000; box-shadow: 0 5px #008000; }
-        .btn-small { background: #FF3131; color: #fff; box-shadow: 0 5px #800000; }
-        .btn:active { transform: translateY(4px); box-shadow: none; }
-        .reset-btn { margin-top: 20px; background: #333; color: #ccc; font-size: 12px; padding: 5px 10px; border-radius: 5px; cursor: pointer; border: none;}
+        .btn-big { background: #00ff00; color: #000; }
+        .btn-small { background: #ff3131; color: #fff; }
+        .btn-red { background: #ff0000; color: #fff; }
+        .btn-green { background: #00ff00; color: #000; }
+        .btn:active { transform: translateY(8px); box-shadow: none; }
+        .reset-btn { margin-top: 30px; background: #444; color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
+        .loader { color: #ffaa00; font-size: 20px; }
     </style>
 </head>
 <body>
-
-    <div class="header">DIUAPK 4-LOGIC AI</div>
-    
+    <div class="header">ULTIMATE PREDICTOR PRO AI - 2025</div>
     <div class="timer" id="timerDisplay">60s</div>
-    
     <div class="predict-box" id="predictionDisplay">WAIT</div>
-    
-    <div class="history-view" id="historyDisplay">Inputs: None</div>
+    <div class="history" id="historyDisplay">Pattern: None</div>
+    <div class="loader" id="loader"></div>
 
-    <div style="font-size: 12px; margin-bottom: 10px;">Enter Last 4 Results:</div>
+    <div style="font-size: 18px; margin: 20px;">Enter Last 4 Results (Latest First):</div>
     <div class="btn-group">
-        <button class="btn btn-big" onclick="addHistory('B')">BIG</button>
-        <button class="btn btn-small" onclick="addHistory('S')">SMALL</button>
+        <button class="btn btn-big" onclick="addHistory('BIG')">BIG</button>
+        <button class="btn btn-small" onclick="addHistory('SMALL')">SMALL</button>
+        <button class="btn btn-red" onclick="addHistory('RED')">RED</button>
+        <button class="btn btn-green" onclick="addHistory('GREEN')">GREEN</button>
     </div>
 
-    <button class="reset-btn" onclick="resetApp()">RESET SYSTEM</button>
+    <button class="reset-btn" onclick="resetApp()">RESET ALL</button>
 
     <script>
         let history = [];
@@ -74,42 +70,56 @@
 
         function resetApp() {
             history = [];
-            document.getElementById('historyDisplay').innerText = "Inputs: None";
+            document.getElementById('historyDisplay').innerText = "Pattern: None";
             document.getElementById('predictionDisplay').innerText = "WAIT";
             document.getElementById('predictionDisplay').style.color = "yellow";
+        }
+
+        function getPrediction() {
+            if (history.length < 4) return {pred: "NEED 4 INPUTS", col: "orange"};
+
+            const pattern = history.join("");
+
+            // Big/Small Patterns (from first code + extras)
+            if (pattern.includes("BIGBIGBIGBIG") || pattern === "BBBB") return {pred: "SMALL", col: "#FF3131"};
+            if (pattern.includes("SMALLSMALLSMALLSMALL") || pattern === "SSSS") return {pred: "BIG", col: "#00FF00"};
+            if (pattern === "BSBS" || pattern === "B S B S") return {pred: "BIG", col: "#00FF00"};
+            if (pattern === "SBSB" || pattern === "S B S B") return {pred: "SMALL", col: "#FF3131"};
+            if (pattern.endsWith("BIGBIG")) return {pred: "SMALL", col: "#FF3131"};
+            if (pattern.endsWith("SMALLSMALL")) return {pred: "BIG", col: "#00FF00"};
+
+            // Red/Green Patterns (from second code + common tricks)
+            const nums = history.map(h => h === "RED" ? 1 : 0); // Simple mapping for demo
+            let weight = Math.abs(nums[0] - nums[2]) + (nums[1] + nums[3]);
+            if (weight % 2 === 0) return {pred: "RED 🔴", col: "#ff3333"};
+            else return {pred: "GREEN 🟢", col: "#33ff33"};
+
+            // Fallback random (realistic)
+            const options = ["BIG 🟢", "SMALL 🔴", "RED 🔴", "GREEN 🟢"];
+            const rand = options[Math.floor(Math.random() * options.length)];
+            return {pred: rand, col: rand.includes("BIG") || rand.includes("GREEN") ? "#00FF00" : "#FF3131"};
         }
 
         function updateEngine() {
             const now = new Date();
             const seconds = now.getSeconds();
             const remaining = 60 - seconds;
-            
             document.getElementById('timerDisplay').innerText = remaining + "s";
 
-            // 20 Seconds Rule [cite: 2025-12-21]
+            let predObj;
             if (remaining <= 20 && remaining > 5) {
-                if (history.length < 4) {
-                    currentPrediction = "NEED 4 INPUTS";
-                    predictionColor = "orange";
-                } else {
-                    // Chanakya Pattern Logic [cite: 2025-12-24]
-                    const pattern = history.join("");
-                    if (pattern === "BBBB") { currentPrediction = "SMALL"; predictionColor = "#FF3131"; }
-                    else if (pattern === "SSSS") { currentPrediction = "BIG"; predictionColor = "#00FF00"; }
-                    else if (pattern === "BSBS") { currentPrediction = "BIG"; predictionColor = "#00FF00"; }
-                    else if (pattern === "SBSB") { currentPrediction = "SMALL"; predictionColor = "#FF3131"; }
-                    else {
-                        // Agar koi trend nahi milta toh video logic follow karein [cite: 2025-11-04]
-                        currentPrediction = (Math.random() > 0.5) ? "BIG" : "SMALL";
-                        predictionColor = (currentPrediction === "BIG") ? "#00FF00" : "#FF3131";
-                    }
-                }
+                predObj = getPrediction();
+                currentPrediction = predObj.pred;
+                predictionColor = predObj.col;
+                document.getElementById('loader').innerText = "AI Analyzing Pattern...";
             } else if (remaining <= 5) {
-                currentPrediction = "RESULT...";
+                currentPrediction = "RESULT SOON...";
                 predictionColor = "cyan";
+                document.getElementById('loader').innerText = "";
             } else {
-                currentPrediction = "ANALYZING...";
+                currentPrediction = "ANALYZING DATA...";
                 predictionColor = "yellow";
+                document.getElementById('loader').innerText = "";
             }
 
             const pDisplay = document.getElementById('predictionDisplay');
@@ -118,6 +128,7 @@
         }
 
         setInterval(updateEngine, 1000);
+        updateEngine(); // Initial call
     </script>
 </body>
 </html>
