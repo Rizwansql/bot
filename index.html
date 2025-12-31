@@ -5,179 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KALA BAZAR | Modern Store</title>
     <style>
-        :root { --dark: #121212; --gold: #ff9f43; --red: #ee5253; --green: #1dd1a1; --white: #fff; --gray: #f7f7f7; }
-        body { font-family: 'Poppins', Arial, sans-serif; margin: 0; background: var(--gray); }
+        :root { --gold: #ff9f43; --dark: #121212; }
+        body { font-family: sans-serif; margin: 0; background: #f4f4f4; }
+        header { background: var(--dark); color: white; padding: 15px; text-align: center; font-size: 1.5rem; font-weight: bold; color: var(--gold); }
+        .container { padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .card { background: white; padding: 10px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 120px; object-fit: contain; }
+        .price { color: green; font-weight: bold; }
         
-        /* HEADER */
-        header { background: var(--dark); color: var(--white); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 1.5rem; font-weight: 800; color: var(--gold); text-transform: uppercase; }
-
-        /* PRODUCT GRID */
-        .container { padding: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+        /* AI Button Design */
+        #ai-btn { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: linear-gradient(135deg, #6c5ce7, #a29bfe); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 2px solid white; }
         
-        .card { background: white; border-radius: 15px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; position: relative; }
-        .card img { width: 100%; height: 160px; object-fit: contain; border-radius: 10px; }
-        .card h4 { font-size: 0.9rem; margin: 10px 0; color: #333; height: 35px; overflow: hidden; }
-        .price { color: var(--green); font-weight: bold; font-size: 1.1rem; }
-
-        /* AI CHATBOT BUTTON - NEW LOOK */
-        #ai-btn { position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; background: linear-gradient(135deg, #6c5ce7, #a29bfe); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; box-shadow: 0 8px 25px rgba(108, 92, 231, 0.5); z-index: 5000; border: 3px solid white; transition: 0.3s; }
-        #ai-btn:hover { transform: scale(1.1); rotate: 10deg; }
-
-        /* CHAT WINDOW */
-        #chat-window { position: fixed; bottom: 100px; right: 25px; width: 320px; height: 400px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: none; flex-direction: column; z-index: 5001; overflow: hidden; }
-        .chat-header { background: #6c5ce7; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; }
-        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f0f2f5; font-size: 0.9rem; }
-        .chat-footer { padding: 10px; display: flex; gap: 5px; background: white; }
-        .chat-footer input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ddd; outline: none; }
+        #chat-box { position: fixed; bottom: 90px; right: 20px; width: 300px; height: 400px; background: white; border-radius: 15px; display: none; flex-direction: column; box-shadow: 0 5px 25px rgba(0,0,0,0.2); z-index: 1001; overflow: hidden; }
+        .chat-head { background: #6c5ce7; color: white; padding: 10px; font-weight: bold; }
+        .chat-body { flex: 1; padding: 10px; overflow-y: auto; font-size: 14px; }
+        .chat-input { display: flex; border-top: 1px solid #eee; }
+        .chat-input input { flex: 1; border: none; padding: 10px; outline: none; }
         
-        .msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 15px; max-width: 80%; }
-        .msg.ai { background: #e2e8f0; align-self: flex-start; }
-        .msg.user { background: #6c5ce7; color: white; align-self: flex-end; margin-left: auto; }
-
-        /* PAYMENT MODAL */
-        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index:9000; }
-        .modal-content { background:white; padding:25px; border-radius:20px; width:90%; max-width:400px; position:relative; }
-        .method { border: 1px solid #ddd; padding:12px; border-radius:12px; margin-bottom:10px; display:flex; align-items:center; gap:15px; cursor:pointer; }
-        .method:hover { border-color: var(--gold); background: #fffcf5; }
-        .input-pay { width:100%; padding:12px; margin:10px 0; border:1px solid #ddd; border-radius:8px; box-sizing:border-box; }
+        /* Payment Modal */
+        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index:2000; }
+        .modal-inner { background:white; padding:20px; border-radius:15px; width:90%; max-width:350px; }
+        .pay-btn { background: #222; color: var(--gold); border: 1px solid var(--gold); width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">KALA BAZAR</div>
-        <div style="font-size: 24px;">🛒</div>
-    </header>
+<header>KALA BAZAR</header>
 
-    <div class="nav-tabs" id="categoryNav" style="padding:10px; display:flex; gap:10px; overflow-x:auto; background:white;"></div>
+<div class="container" id="products"></div>
 
-    <div class="container">
-        <div id="loading" style="text-align:center; padding:50px;">डेटा लोड हो रहा है, कृपया रुकें...</div>
-        <div class="grid" id="productGrid"></div>
+<div id="ai-btn" onclick="document.getElementById('chat-box').style.display='flex'">✨</div>
+
+<div id="chat-box">
+    <div class="chat-head">KALA AI Assistant <span onclick="document.getElementById('chat-box').style.display='none'" style="float:right; cursor:pointer;">×</span></div>
+    <div class="chat-body" id="msgs"><div><b>AI:</b> नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?</div></div>
+    <div class="chat-input">
+        <input type="text" id="ai-in" placeholder="Type here...">
+        <button onclick="askAI()" style="padding:10px; background:none; border:none; cursor:pointer;">🚀</button>
     </div>
+</div>
 
-    <div id="ai-btn" onclick="toggleChat()">✨</div>
-
-    <div id="chat-window">
-        <div class="chat-header">
-            <span>KALA Assistant</span>
-            <span style="cursor:pointer" onclick="toggleChat()">×</span>
-        </div>
-        <div class="chat-body" id="chat-msgs">
-            <div class="msg ai">नमस्ते! मैं 'काला बाज़ार' का स्मार्ट AI हूँ। मैं आपकी क्या मदद कर सकता हूँ?</div>
-        </div>
-        <div class="chat-footer">
-            <input type="text" id="ai-input" placeholder="सवाल पूछें...">
-            <button onclick="sendToAI()" style="border:none; background:none; font-size:20px; cursor:pointer;">🚀</button>
-        </div>
+<div id="payModal" class="modal">
+    <div class="modal-inner">
+        <h3>Payment Method</h3>
+        <div class="pay-btn" onclick="alert('Card system logic added!')">💳 Credit / Debit Card</div>
+        <div class="pay-btn" onclick="window.location.href='upi://pay?pa=rizwanhasan90122778623@ybl&am=100'">📱 UPI (PhonePe/GPay)</div>
+        <div class="pay-btn" onclick="alert('BTC Address: bc1q... Copied!')">₿ Bitcoin / USDT</div>
+        <button onclick="document.getElementById('payModal').style.display='none'" style="color:red; background:none; border:none; width:100%; margin-top:10px;">Cancel</button>
     </div>
+</div>
 
-    <div id="payModal" class="modal">
-        <div class="modal-content">
-            <h3 style="margin-top:0">सुरक्षित पेमेंट</h3>
-            <p id="total-price" style="font-weight:bold; color:var(--green);"></p>
-            
-            <div class="method" onclick="alert('Card system linked!')">
-                <img src="https://img.icons8.com/color/48/visa.png" width="30"> कार्ड से पेमेंट (Visa/Master)
-            </div>
-            <div class="method" onclick="window.location.href='upi://pay?pa=rizwanhasan90122778623@ybl&am=100'">
-                <img src="https://img.icons8.com/color/48/google-pay.png" width="30"> UPI (G-Pay/PhonePe)
-            </div>
-            <div class="method" onclick="alert('Crypto Address Copied!')">
-                <img src="https://img.icons8.com/color/48/bitcoin.png" width="30"> Bitcoin / USDT
-            </div>
-
-            <input type="text" placeholder="UTR / Transaction ID डालें" class="input-pay" id="utr">
-            <button onclick="confirmOrder()" style="width:100%; padding:15px; background:var(--dark); color:var(--gold); border:none; border-radius:10px; font-weight:bold;">ऑर्डर कन्फर्म करें</button>
-            <button onclick="closeModal()" style="width:100%; background:none; border:none; color:red; margin-top:10px;">बंद करें</button>
-        </div>
-    </div>
-
-    <script>
-        let allProducts = {};
-
-        // 1. DATA LOADING FIX
-        // पाथ को './products.json' किया है ताकि GitHub सही से ढूंढे
-        fetch('./products.json')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('loading').style.display = 'none';
-                data.forEach(p => {
-                    let c = p.category || "Deals";
-                    if(!allProducts[c]) allProducts[c] = [];
-                    allProducts[c].push(p);
-                });
-                renderNav();
-            })
-            .catch(err => {
-                document.getElementById('loading').innerHTML = "JSON फाइल नहीं मिली! कृपया चेक करें कि 'products.json' उसी फोल्डर में है या नहीं।";
-            });
-
-        function renderNav() {
-            const cats = Object.keys(allProducts);
-            const nav = document.getElementById('categoryNav');
-            nav.innerHTML = cats.map(c => `<button class="tab-btn" onclick="showCat('${c}')" style="padding:8px 15px; border-radius:20px; border:1px solid #ddd; background:white; white-space:nowrap;">${c}</button>`).join('');
-            showCat(cats[0]);
-        }
-
-        function showCat(cat) {
-            const grid = document.getElementById('productGrid');
-            grid.innerHTML = allProducts[cat].map(p => `
-                <div class="card" onclick="payNow('${p.price}')">
-                    <span class="discount-badge" style="position:absolute; background:red; color:white; font-size:10px; padding:2px 5px; border-radius:3px;">HOT</span>
+<script>
+    // 1. Load Products from JSON
+    fetch('products.json')
+        .then(r => r.json())
+        .then(data => {
+            const div = document.getElementById('products');
+            div.innerHTML = data.map(p => `
+                <div class="card" onclick="document.getElementById('payModal').style.display='flex'">
                     <img src="${p.img}">
                     <h4>${p.name}</h4>
-                    <div class="price">₹${p.price}</div>
-                    <button style="width:100%; margin-top:10px; background:#121212; color:#f39c12; border:none; padding:8px; border-radius:5px;">Buy Now</button>
+                    <p class="price">₹${p.price}</p>
+                    <button style="background:black; color:orange; border:none; padding:5px 10px; border-radius:5px;">Buy</button>
                 </div>
             `).join('');
-        }
+        });
 
-        // 2. PAYMENT LOGIC
-        function payNow(pr) {
-            document.getElementById('total-price').innerText = "कुल राशि: ₹" + pr;
-            document.getElementById('payModal').style.display = 'flex';
-        }
-        function closeModal() { document.getElementById('payModal').style.display = 'none'; }
-        function confirmOrder() {
-            if(document.getElementById('utr').value.length < 4) return alert("सही UTR ID डालें");
-            alert("ऑर्डर स्वीकार कर लिया गया है! आपको जल्द ही कॉल आएगा।");
-            location.reload();
-        }
-
-        // 3. AI CHATBOT LOGIC (BETTER RESPONSES)
-        function toggleChat() {
-            const win = document.getElementById('chat-window');
-            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function sendToAI() {
-            const input = document.getElementById('ai-input');
-            const box = document.getElementById('chat-msgs');
-            if(!input.value) return;
-
-            box.innerHTML += `<div class="msg user">${input.value}</div>`;
-            
-            // Smart Responses based on keywords
-            let val = input.value.toLowerCase();
-            let reply = "क्षमा करें, मैं समझ नहीं पाया। क्या आप प्रोडक्ट या पेमेंट के बारे में पूछना चाहते हैं?";
-            
-            if(val.includes("price") || val.includes("कीमत")) reply = "हमारे यहाँ सभी प्रोडक्ट्स बाज़ार से 40% कम दाम पर हैं।";
-            else if(val.includes("delivery") || val.includes("कब आएगा")) reply = "ऑर्डर के बाद 3-5 दिनों में डिलीवरी हो जाती है।";
-            else if(val.includes("return")) reply = "7 दिनों की आसान वापसी (Easy Return) पॉलिसी उपलब्ध है।";
-            else if(val.includes("hi") || val.includes("hello")) reply = "नमस्ते! मैं आपकी क्या सहायता कर सकता हूँ?";
-
-            setTimeout(() => {
-                box.innerHTML += `<div class="msg ai">${reply}</div>`;
-                box.scrollTop = box.scrollHeight;
-            }, 800);
-            input.value = '';
-        }
-
-        function toggleSidebar() { /* Reserved for future */ }
-    </script>
+    // 2. Simple AI Logic
+    function askAI() {
+        const inp = document.getElementById('ai-in');
+        const box = document.getElementById('msgs');
+        if(!inp.value) return;
+        
+        box.innerHTML += `<div><b>You:</b> ${inp.value}</div>`;
+        let reply = "बहुत अच्छा! क्या आप इस प्रोडक्ट को खरीदना चाहेंगे?";
+        if(inp.value.includes("price")) reply = "हमारे दाम सबसे कम हैं!";
+        
+        setTimeout(() => {
+            box.innerHTML += `<div><b>AI:</b> ${reply}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }, 500);
+        inp.value = "";
+    }
+</script>
 </body>
 </html>
