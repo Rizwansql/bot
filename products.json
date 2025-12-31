@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Premium Wireless Headphones",
+    "price": 1499,
+    "mrp": 2999,
+    "img": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500",
+    "category": "Electronics",
+    "desc": "High quality sound with deep bass and 20h battery."
+  },
+  {
+    "name": "Luxury Men's Watch",
+    "price": 999,
+    "mrp": 1999,
+    "img": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500",
+    "category": "Watches",
+    "desc": "Classic analog watch with leather strap."
+  },
+  {
+    "name": "Smart Fitness Band",
+    "price": 799,
+    "mrp": 1599,
+    "img": "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=500",
+    "category": "Electronics",
+    "desc": "Track your steps and heart rate 24/7."
+  },
+  {
+    "name": "Sports Running Shoes",
+    "price": 1299,
+    "mrp": 2499,
+    "img": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
+    "category": "Shoes",
+    "desc": "Lightweight and breathable for daily running."
+  }
+]
