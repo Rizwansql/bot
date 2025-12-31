@@ -3,253 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KALA BAZAR | Elite Store</title>
+    <title>KALA BAZAR | Modern Shop</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --gold: #f39c12; --dark: #0f0f0f; --card-bg: #1a1a1a; --text: #fff; --glass: rgba(255, 255, 255, 0.1); }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: #000; color: var(--text); overflow-x: hidden; }
+        :root { --gold: #ff9f43; --dark: #0f0f0f; --glass: rgba(255, 255, 255, 0.08); --accent: #ffcc00; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; background: #000; color: white; }
+
+        /* HEADER */
+        header { background: #111; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--gold); cursor: pointer; text-transform: uppercase; }
+
+        /* NEW MODERN SIDEBAR (Based on your image) */
+        .sidebar { height: 100%; width: 0; position: fixed; z-index: 5000; top: 0; right: 0; background: #0a0a0a; overflow-x: hidden; transition: 0.3s; border-left: 1px solid #333; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-menu { padding: 10px; }
+        .menu-btn { width: 90%; margin: 8px auto; padding: 15px; background: transparent; border-radius: 10px; display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; transition: 0.2s; border-bottom: 0.5px solid #222; }
+        .menu-btn i { font-size: 20px; color: var(--gold); }
+        .menu-btn:active { background: var(--glass); }
+        .menu-btn span { font-weight: 500; font-size: 16px; }
+
+        /* PRODUCT CARD & WATERMARK */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+        .card { background: #151515; border-radius: 12px; padding: 10px; position: relative; border: 1px solid #222; }
+        .card img { width: 100%; border-radius: 8px; }
+        .price-row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .price { color: #00ff88; font-weight: bold; font-size: 1.1rem; }
         
-        /* MODERN HEADER */
-        header { background: var(--dark); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333; }
-        .logo { font-size: 1.4rem; font-weight: 800; color: var(--gold); cursor: pointer; }
-        .user-status { font-size: 0.8rem; color: #aaa; }
+        /* Flipkart Style Watermark */
+        .watermark { font-size: 0.65rem; background: rgba(255, 204, 0, 0.1); color: var(--gold); padding: 2px 5px; border-radius: 4px; border: 0.5px solid rgba(255, 204, 0, 0.3); font-weight: bold; }
 
-        /* MODERN GLASS SIDEBAR */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 1999; }
-        .sidebar { height: 100%; width: 0; position: fixed; z-index: 2000; top: 0; right: 0; background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); overflow-x: hidden; transition: 0.4s; padding-top: 60px; }
-        .sidebar-item { padding: 15px 25px; margin: 10px 15px; background: var(--glass); border-radius: 12px; text-decoration: none; color: white; display: flex; align-items: center; gap: 15px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05); }
-        .sidebar-item:hover { background: var(--gold); color: black; transform: translateX(-5px); }
-        .closebtn { position: absolute; top: 10px; left: 20px; font-size: 30px; cursor: pointer; color: var(--gold); }
-
-        /* PRODUCT GRID */
-        .container { padding: 20px 10px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card { background: var(--card-bg); border-radius: 15px; padding: 12px; border: 1px solid #222; position: relative; }
-        .card img { width: 100%; height: 140px; object-fit: contain; border-radius: 10px; }
-        .card h4 { font-size: 0.85rem; margin: 10px 0 5px; color: #eee; }
-        .price { color: var(--gold); font-weight: bold; font-size: 1.1rem; }
-
-        /* MODAL SYSTEMS */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; display: none; justify-content: center; align-items: center; overflow-y: auto; }
-        .modal-content { background: #111; width: 90%; max-width: 450px; border-radius: 20px; padding: 25px; border: 1px solid #333; position: relative; }
+        /* MODALS (Fixed Front Layering) */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); }
+        .modal-content { background: #1a1a1a; width: 85%; max-width: 400px; padding: 25px; border-radius: 20px; border: 1px solid #333; position: relative; }
         
-        /* LOGIN & ADDRESS INPUTS */
-        .input-group { margin-bottom: 15px; }
-        input, textarea { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; margin-top: 5px; }
-        .btn-prime { width: 100%; background: var(--gold); color: black; border: none; padding: 14px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #252525; border: 1px solid #444; color: white; border-radius: 8px; outline: none; }
+        .btn-buy { width: 100%; padding: 12px; background: var(--gold); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* COLOR & SIZE BUBBLES */
-        .variant-box { display: flex; gap: 10px; margin-top: 10px; }
-        .color-dot { width: 30px; height: 30px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
-        .color-dot.active { border-color: var(--gold); transform: scale(1.1); }
-        
-        /* ORDERS LIST */
-        #orders-list { padding: 10px; }
-        .order-item { background: #222; padding: 10px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--gold); }
-
-        /* FOOTER APP BUTTONS */
-        .app-store { display: flex; justify-content: center; gap: 10px; margin: 30px 0; }
-        .app-store img { height: 35px; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 4000; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo" onclick="location.reload()">KALA BAZAR</div>
-        <div id="user-display" class="user-status" onclick="openLogin()">Login <i class="fas fa-user"></i></div>
-        <div onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+        <i class="fas fa-bars" style="font-size: 24px;" onclick="openMenu()"></i>
     </header>
 
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div id="overlay" class="overlay" onclick="closeMenu()"></div>
 
     <div id="sidebar" class="sidebar">
-        <span class="closebtn" onclick="toggleSidebar()">×</span>
-        <a href="javascript:void(0)" onclick="location.reload()" class="sidebar-item"><i class="fas fa-home"></i> Home</a>
-        <a href="javascript:void(0)" onclick="openOrders()" class="sidebar-item"><i class="fas fa-box"></i> My Orders</a>
-        <a href="javascript:void(0)" onclick="openAI()" class="sidebar-item"><i class="fas fa-robot"></i> AI Help (Contact)</a>
-        <a href="javascript:void(0)" onclick="openPrivacy()" class="sidebar-item"><i class="fas fa-scroll"></i> Privacy Policy</a>
+        <div class="sidebar-header">
+            <span style="color:var(--gold); font-weight:bold;">MENU</span>
+            <i class="fas fa-times" onclick="closeMenu()" style="font-size: 24px;"></i>
+        </div>
+        <div class="sidebar-menu">
+            <a href="#" class="menu-btn" onclick="location.reload()"><i class="fas fa-home"></i> <span>Refresh Hub</span></a>
+            <a href="#" class="menu-btn" id="login-menu-btn" onclick="openLogin()"><i class="fas fa-user-circle"></i> <span>User Login</span></a>
+            <a href="#" class="menu-btn" onclick="openOrders()"><i class="fas fa-box"></i> <span>My Orders</span></a>
+            <a href="#" class="menu-btn" onclick="openAI()"><i class="fas fa-robot"></i> <span>AI Help (Chat)</span></a>
+            <a href="#" class="menu-btn" onclick="openPrivacy()"><i class="fas fa-shield-alt"></i> <span>Privacy Policy</span></a>
+            <a href="https://t.me/yourlink" class="menu-btn"><i class="fab fa-telegram"></i> <span>Join Telegram</span></a>
+        </div>
     </div>
 
-    <div class="container">
-        <div class="grid" id="productGrid"></div>
-    </div>
-
-    <div class="app-store">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg">
-    </div>
+    <div class="grid" id="productGrid"></div>
 
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <h2 style="color:var(--gold)">Login / Register</h2>
-            <input type="text" id="log-phone" placeholder="Mobile Number">
-            <input type="password" id="log-pass" placeholder="Password">
-            <button class="btn-prime" onclick="saveLogin()">LOGIN NOW</button>
-            <button onclick="closeModal('loginModal')" style="background:none; border:none; color:red; width:100%; margin-top:10px;">Cancel</button>
+            <h3 style="margin-top:0; color:var(--gold);">Sign In</h3>
+            <p style="font-size: 0.8rem; color: #aaa;">Enter details to continue</p>
+            <input type="text" id="phone" placeholder="Mobile Number">
+            <input type="password" id="pass" placeholder="Password">
+            <button class="btn-buy" onclick="doLogin()">LOGIN NOW</button>
+            <button onclick="closeModal('loginModal')" style="background:none; border:none; color:#ff4444; width:100%; margin-top:15px;">Close</button>
         </div>
     </div>
 
-    <div id="detailModal" class="modal">
+    <div id="productModal" class="modal">
         <div class="modal-content">
-            <img id="det-img" style="width:100%; height:200px; object-fit:contain;">
-            <h3 id="det-name"></h3>
-            <p id="det-price" class="price"></p>
-            
-            <div class="input-group">
-                <label>Select Color:</label>
-                <div class="variant-box">
-                    <div class="color-dot active" style="background:black" onclick="setVar(this)"></div>
-                    <div class="color-dot" style="background:gray" onclick="setVar(this)"></div>
-                    <div class="color-dot" style="background:blue" onclick="setVar(this)"></div>
-                </div>
-            </div>
-            <button class="btn-prime" onclick="openAddress()">BUY NOW</button>
-            <button onclick="closeModal('detailModal')" style="background:none; border:none; color:red; width:100%; margin-top:10px;">Close</button>
-        </div>
-    </div>
-
-    <div id="addrModal" class="modal">
-        <div class="modal-content">
-            <h3 style="color:var(--gold)">Delivery Address</h3>
-            <input type="text" id="cust-name" placeholder="Full Name">
-            <input type="text" id="cust-phone" placeholder="Alternative Number">
-            <textarea id="cust-addr" placeholder="Full Address (House No, Area, Pincode)"></textarea>
-            <button class="btn-prime" onclick="openPayment()">PROCEED TO PAYMENT</button>
-            <button onclick="closeModal('addrModal')" style="background:none; border:none; color:red; width:100%; margin-top:10px;">Back</button>
-        </div>
-    </div>
-
-    <div id="payModal" class="modal">
-        <div class="modal-content" style="border:1px solid var(--gold); text-align:center;">
-            <h2 style="color:var(--gold)">PAYMENT</h2>
-            <div id="final-amt" style="font-size:2rem; margin-bottom:20px; color:#00ff88;"></div>
-            
-            <button class="btn-prime" style="background:#222; color:white; border:1px solid #444;" onclick="pay('Google Pay')">Google Pay</button>
-            <button class="btn-prime" style="background:#222; color:white; border:1px solid #444;" onclick="pay('PhonePe')">PhonePe</button>
-            <button class="btn-prime" style="background:#222; color:white; border:1px solid #444;" onclick="pay('Paytm')">Paytm</button>
-            <button class="btn-prime" style="background:#222; color:white; border:1px solid #444;" onclick="pay('Crypto')">USDT / BTC</button>
-            
-            <input type="text" id="utr" placeholder="Enter Transaction ID" style="margin-top:15px; border-color:var(--gold);">
-            <button class="btn-prime" style="background:#00ff88; color:black;" onclick="confirmOrder()">VERIFY & PLACE ORDER</button>
-        </div>
-    </div>
-
-    <div id="orderModal" class="modal">
-        <div class="modal-content">
-            <h3 style="color:var(--gold)">My Orders</h3>
-            <div id="orders-list"></div>
-            <button onclick="closeModal('orderModal')" class="btn-prime">Close</button>
+            <img id="m-img" style="width:100%; border-radius:10px;">
+            <h2 id="m-name" style="font-size: 1.2rem; margin:10px 0;"></h2>
+            <div id="m-price" class="price" style="font-size:1.5rem; margin-bottom:15px;"></div>
+            <button class="btn-buy" onclick="handleBuy()">BUY NOW</button>
+            <button onclick="closeModal('productModal')" style="background:none; border:none; color:white; width:100%; margin-top:10px;">Back</button>
         </div>
     </div>
 
     <script>
-        let allProds = [];
-        let selectedProd = {};
-        let currentUser = JSON.parse(localStorage.getItem('user')) || null;
+        let products = [];
+        let loggedInUser = JSON.parse(localStorage.getItem('user')) || null;
 
-        // LOAD DATA
+        // Fetch Products
         fetch('products.json').then(r => r.json()).then(data => {
-            allProds = data;
-            const grid = document.getElementById('productGrid');
-            grid.innerHTML = data.map((p, i) => `
-                <div class="card" onclick="openDetail(${i})">
-                    <img src="${p.img}">
-                    <h4>${p.name}</h4>
-                    <p class="price">₹${p.price}</p>
-                </div>
-            `).join('');
-            if(currentUser) document.getElementById('user-display').innerText = "Hi, " + currentUser.phone;
+            products = data;
+            renderProducts();
+            updateUI();
         });
 
-        // MODAL HELPERS
-        function openDetail(i) {
-            selectedProd = allProds[i];
-            document.getElementById('det-img').src = selectedProd.img;
-            document.getElementById('det-name').innerText = selectedProd.name;
-            document.getElementById('det-price').innerText = "₹" + selectedProd.price;
-            document.getElementById('detailModal').style.display = 'flex';
-        }
-
-        function toggleSidebar() {
-            const s = document.getElementById('sidebar');
-            const o = document.getElementById('overlay');
-            if(s.style.width === '280px') {
-                s.style.width = '0'; o.style.display = 'none';
-            } else {
-                s.style.width = '280px'; o.style.display = 'block';
-            }
-        }
-
-        function openLogin() { document.getElementById('loginModal').style.display = 'flex'; }
-        
-        function saveLogin() {
-            const phone = document.getElementById('log-phone').value;
-            const pass = document.getElementById('log-pass').value;
-            if(phone && pass) {
-                currentUser = { phone, pass };
-                localStorage.setItem('user', JSON.stringify(currentUser));
-                document.getElementById('user-display').innerText = "Hi, " + phone;
-                closeModal('loginModal');
-                alert("Login Success!");
-            }
-        }
-
-        function openAddress() {
-            if(!currentUser) { alert("Please login first!"); openLogin(); return; }
-            closeModal('detailModal');
-            document.getElementById('addrModal').style.display = 'flex';
-        }
-
-        function openPayment() {
-            const name = document.getElementById('cust-name').value;
-            if(!name) { alert("Please enter name & address"); return; }
-            closeModal('addrModal');
-            document.getElementById('final-amt').innerText = "Total: ₹" + selectedProd.price;
-            document.getElementById('payModal').style.display = 'flex';
-        }
-
-        function confirmOrder() {
-            const utr = document.getElementById('utr').value;
-            if(!utr) { alert("Please enter Transaction ID"); return; }
-            
-            let orders = JSON.parse(localStorage.getItem('orders')) || [];
-            orders.push({
-                user: currentUser.phone,
-                item: selectedProd.name,
-                price: selectedProd.price,
-                date: new Date().toLocaleDateString()
-            });
-            localStorage.setItem('orders', JSON.stringify(orders));
-            alert("Order Placed! Order details saved in My Orders.");
-            location.reload();
-        }
-
-        function openOrders() {
-            if(!currentUser) { alert("Login to see orders"); openLogin(); return; }
-            const list = document.getElementById('orders-list');
-            let orders = JSON.parse(localStorage.getItem('orders')) || [];
-            let userOrders = orders.filter(o => o.user === currentUser.phone);
-            
-            list.innerHTML = userOrders.length ? userOrders.map(o => `
-                <div class="order-item">
-                    <b>${o.item}</b><br>Amount: ₹${o.price} | Date: ${o.date}
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = products.map((p, i) => `
+                <div class="card" onclick="openProduct(${i})">
+                    <img src="${p.img}">
+                    <h4 style="margin:8px 0; font-size:0.9rem;">${p.name}</h4>
+                    <div class="price-row">
+                        <span class="price">₹${p.price}</span>
+                        <span class="watermark">KALA BAZAR</span>
+                    </div>
                 </div>
-            `).join('') : "<p>No orders found.</p>";
-            document.getElementById('orderModal').style.display = 'flex';
-            toggleSidebar();
+            `).join('');
+        }
+
+        function openMenu() {
+            document.getElementById('sidebar').style.width = "280px";
+            document.getElementById('overlay').style.display = "block";
+        }
+
+        function closeMenu() {
+            document.getElementById('sidebar').style.width = "0";
+            document.getElementById('overlay').style.display = "none";
+        }
+
+        let currentItem = null;
+        function openProduct(i) {
+            currentItem = products[i];
+            document.getElementById('m-img').src = currentItem.img;
+            document.getElementById('m-name').innerText = currentItem.name;
+            document.getElementById('m-price').innerText = "₹" + currentItem.price;
+            document.getElementById('productModal').style.display = "flex";
+        }
+
+        function handleBuy() {
+            if(!loggedInUser) {
+                closeModal('productModal');
+                openLogin(); // Opens Login on top
+            } else {
+                alert("Proceeding to Address & Payment for " + currentItem.name);
+                // Here you can add your address form logic
+            }
+        }
+
+        function openLogin() {
+            document.getElementById('loginModal').style.display = "flex";
+            closeMenu();
+        }
+
+        function doLogin() {
+            const p = document.getElementById('phone').value;
+            if(p.length > 5) {
+                loggedInUser = { phone: p };
+                localStorage.setItem('user', JSON.stringify(loggedInUser));
+                updateUI();
+                closeModal('loginModal');
+                alert("Welcome back!");
+            }
+        }
+
+        function updateUI() {
+            if(loggedInUser) {
+                document.getElementById('login-menu-btn').innerHTML = `<i class="fas fa-user-check"></i> <span>Hi, ${loggedInUser.phone}</span>`;
+            }
+        }
+
+        function openAI() {
+            alert("KALA AI Assistant: Hello! How can I help you today?\n(System is now active)");
+            closeMenu();
         }
 
         function openPrivacy() {
-            alert("KALA BAZAR POLICY:\n1. 7-Day Return available on all items.\n2. Refund will be processed within 24 hours.\n3. Safe and Encrypted Payments.");
-            toggleSidebar();
+            alert("PRIVACY POLICY:\n- 7 Days Return Policy.\n- Refund in 24 Hours.\n- Your data is safe with KALA BAZAR.");
+            closeMenu();
         }
 
-        function openAI() { alert("KALA AI Assistant is loading... Type your query."); toggleSidebar(); }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function setVar(el) {
-            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-            el.classList.add('active');
+        function openOrders() {
+            if(!loggedInUser) { openLogin(); return; }
+            alert("Opening your orders...");
+            closeMenu();
         }
+
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
     </script>
 </body>
 </html>
